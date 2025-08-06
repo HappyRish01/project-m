@@ -25,7 +25,6 @@ export async function POST(request: Request) {
 
     const isValid = await verifyPassword(password, user.password);
     if (!isValid) {
-      console.error('Invalid password attempt for user:', email);
       return NextResponse.json(
         { message: 'Invalid credentials' },
         { status: 401 }
@@ -37,7 +36,7 @@ export async function POST(request: Request) {
     // setTokenCookie(token);
     const cookieStore = await cookies();
     cookieStore.set('authToken', token, {
-      httpOnly: true,
+      // httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
       maxAge: 60 * 60 * 24 * 7, // 1 week

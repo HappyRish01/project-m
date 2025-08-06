@@ -1,5 +1,6 @@
 import {getUserFromTokenWithoutGivenToken  } from '../lib/server/auth';
 import {AuthProvider} from '@/components/AuthProvider';
+import './globals.css';
 
 export default async function RootLayout({
   children,
