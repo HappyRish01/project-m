@@ -14,6 +14,7 @@ interface AddPartyFormProps {
 
 export function AddPartyForm({ onSubmit, onCancel }: AddPartyFormProps) {
   const [formData, setFormData] = useState<Party>({
+    id: "", // Assuming id is generated elsewhere
     name: "",
     contactPerson: "",
     phone: "",
@@ -26,6 +27,7 @@ export function AddPartyForm({ onSubmit, onCancel }: AddPartyFormProps) {
     onSubmit(formData);
     // Reset form after submission
     setFormData({
+      id: "", // Assuming id is generated elsewhere
       name: "",
       contactPerson: "",
       phone: "",

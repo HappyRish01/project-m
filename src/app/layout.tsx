@@ -1,6 +1,7 @@
 import {getUserFromTokenWithoutGivenToken  } from '../lib/server/auth';
 import {AuthProvider} from '@/components/AuthProvider';
 import './globals.css';
+import { Toaster } from 'sonner';
 
 export default async function RootLayout({
   children,
@@ -15,6 +16,7 @@ export default async function RootLayout({
         <AuthProvider initialUser={user}>
           {children}
         </AuthProvider>
+        <Toaster position="top-right" />
       </body>
     </html>
   );

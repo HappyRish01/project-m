@@ -13,14 +13,14 @@ import { Product } from "@/types/product" // Import Product type
 interface ProductListProps {
   products: Product[]
   onEdit: (product: Product) => void
-  onDelete: (productId: number) => void
+  onDelete: (productId: string) => void
 }
 
 export function ProductList({ products, onEdit, onDelete }: ProductListProps) {
   return (
     <div className="space-y-3 max-h-[calc(100vh-200px)] overflow-y-auto">
       {products.map((product) => (
-        <Card key={product.id} className="hover:shadow-md transition-shadow">
+        <Card key={product.id} className="hover:shadow-md transition-shadow p-1">
           <CardContent className="p-4">
             <div className="flex items-start justify-between">
               <div className="flex-1 min-w-0">
@@ -29,23 +29,24 @@ export function ProductList({ products, onEdit, onDelete }: ProductListProps) {
                     {product.name}
                   </h3>
                   <Badge variant="secondary" className="text-xs flex-shrink-0">
-                    {product.category}
+                    {/* {product.category} */}
                   </Badge>
                 </div>
                 
                 {/* Responsive grid for product details */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-gray-600">
                   <div>
-                    <span className="font-medium">Price:</span> ₹{product.price}
+                    <span className="font-medium">Price (₹) per QTL</span> ₹{product.price}
                   </div>
-                  <div>
-                    <span className="font-medium">Stock:</span> {product.stock}
-                  </div>
+    
                   <div>
                     <span className="font-medium">HSN:</span> {product.hsnCode}
                   </div>
                   <div>
                     <span className="font-medium">GST:</span> {product.gst}%
+                  </div>
+                  <div>
+                    <span className="font-medium">{product.kgpunit} kg</span> in 1{product.unit}
                   </div>
                 </div>
               </div>
@@ -62,7 +63,7 @@ export function ProductList({ products, onEdit, onDelete }: ProductListProps) {
                     Edit
                   </DropdownMenuItem>
                   <DropdownMenuItem 
-                    onClick={() => onDelete(product.id)}
+                    onClick={() => onDelete(product.id? product.id : '')}
                     className="text-red-600"
                   >
                     <Trash2 className="mr-2 h-4 w-4" />

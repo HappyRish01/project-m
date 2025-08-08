@@ -20,28 +20,23 @@ interface AddProductFormProps {
   onCancel?: () => void
 }
 
-const categories = [
-  "Electronics",
-  "Clothing",
-  "Home & Kitchen",
-  "Sports",
-  "Books",
-  "Beauty",
-  "Automotive",
-  "Other"
+const unit = [
+  "Kata",
+  "Peti",
+  "Bag"
 ]
 
 const gstRates = [0, 5, 12, 18, 28]
 
 export function AddProductForm({ product, onSubmit, onCancel }: AddProductFormProps) {
   const [formData, setFormData] = useState<Product>({
-    id: 0,
+    // id: "",
     name: "",
+    kgpunit: 0,
     price: 0,
     hsnCode: "",
     gst: 18,
-    category: "",
-    stock: 0
+    unit: unit[0]
   })
 
   useEffect(() => {
@@ -49,13 +44,13 @@ export function AddProductForm({ product, onSubmit, onCancel }: AddProductFormPr
       setFormData(product)
     } else {
       setFormData({
-        id: 0,
+        // id: "",
         name: "",
-        price: 0,
+        price:0,
         hsnCode: "",
+        kgpunit: 0,
         gst: 18,
-        category: "",
-        stock: 0
+        unit: unit[0] // Default unit
       })
     }
   }, [product])
@@ -67,19 +62,19 @@ export function AddProductForm({ product, onSubmit, onCancel }: AddProductFormPr
     if (!product) {
       // Reset form only when adding new product
       setFormData({
-        id: 0,
+        // id: "",
         name: "",
+        kgpunit: 0,
         price: 0,
         hsnCode: "",
         gst: 18,
-        category: "",
-        stock: 0
+        unit: unit[0] // Reset to default unit
       })
     }
   }
 
   const handleInputChange = (field: keyof Product, value: string | number) => {
-    setFormData(prev => ({
+    setFormData((prev: any) => ({
       ...prev,
       [field]: value
     }))
@@ -106,34 +101,7 @@ export function AddProductForm({ product, onSubmit, onCancel }: AddProductFormPr
           </div>
 
           {/* Responsive grid for price and stock */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="price">Price (₹)</Label>
-              <Input
-                id="price"
-                type="number"
-                step="0.01"
-                min="0"
-                value={formData.price}
-                onChange={(e) => handleInputChange('price', parseFloat(e.target.value) || 0)}
-                placeholder="0.00"
-                required
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="stock">Stock Quantity</Label>
-              <Input
-                id="stock"
-                type="number"
-                min="0"
-                value={formData.stock}
-                onChange={(e) => handleInputChange('stock', parseInt(e.target.value) || 0)}
-                placeholder="0"
-                required
-              />
-            </div>
-          </div>
+          
 
           <div className="space-y-2">
             <Label htmlFor="hsnCode">HSN Code</Label>
@@ -145,14 +113,50 @@ export function AddProductForm({ product, onSubmit, onCancel }: AddProductFormPr
               required
             />
           </div>
-
-          {/* Responsive grid for GST and category */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="price">Price (₹) per QTL</Label>
+              <Input
+                id="price"
+                type="number"
+                step="0.1"
+                min="0"
+                value={formData.price}
+                onChange={(e) => handleInputChange('price', parseFloat(e.target.value))}
+                // placeholder="0.00"
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="gst">Unit</Label>
+              <Select 
+                // value={formData.unit}
+                defaultValue={formData.unit.toString()} 
+                // value={String(formData.unit.toString())} 
+                onValueChange={(value) =>{
+                  console.log("Selected unit:", value.toString())
+                  console.log("Selected unit 136:", formData.unit.toString())
+                  handleInputChange('unit', value.toString())
+                }
+              } 
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select unit" />
+                </SelectTrigger>
+                <SelectContent>
+                  {unit.map((rate) => (
+                    <SelectItem key={rate} value={rate}>
+                      {rate}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
             <div className="space-y-2">
               <Label htmlFor="gst">GST Rate (%)</Label>
               <Select 
                 value={formData.gst.toString()} 
-                onValueChange={(value) => handleInputChange('gst', parseInt(value))}
+                onValueChange={(value) => handleInputChange('gst', Number(parseInt(value)))}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select GST rate" />
@@ -167,23 +171,26 @@ export function AddProductForm({ product, onSubmit, onCancel }: AddProductFormPr
               </Select>
             </div>
 
+            
+            
+          </div>
+
+          {/* Responsive grid for GST and category */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            
+            
             <div className="space-y-2">
-              <Label htmlFor="category">Category</Label>
-              <Select 
-                value={formData.category} 
-                onValueChange={(value) => handleInputChange('category', value)}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select category" />
-                </SelectTrigger>
-                <SelectContent>
-                  {categories.map((category) => (
-                    <SelectItem key={category} value={category}>
-                      {category}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <Label htmlFor="kgpunit">Kg's in 1 {formData.unit}</Label>
+              <Input
+                id="kgpunit"
+                type="number"
+                step="0.1"
+                min="0"
+                value={formData.kgpunit}
+                onChange={(e) => handleInputChange('kgpunit', parseFloat(e.target.value) || "")}
+                // placeholder="0.00"
+                required
+              />
             </div>
           </div>
 
@@ -201,4 +208,4 @@ export function AddProductForm({ product, onSubmit, onCancel }: AddProductFormPr
       </CardContent>
     </Card>
   )
-}
+}  

@@ -8,14 +8,8 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
 import { useIsMobile } from '@/hooks/use-is-mobile'
-
+import { useAuth } from './AuthProvider'
 // Mock AuthProvider for demonstration. Replace with your actual AuthProvider.
-const useAuth = () => ({
-  logout: () => {
-    console.log("Logging out...")
-    // Implement actual logout logic here (e.g., clear tokens, redirect)
-  }
-})
 
 interface SidebarProps {
   onLinkClick?: () => void; // Prop to close sheet on link click for mobile

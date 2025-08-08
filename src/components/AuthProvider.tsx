@@ -66,6 +66,7 @@ export const AuthProvider = ({
     });
     const data = await response.json();
     // console.log("Login response data:", data.user.role);
+
     if (response.ok) {
       setUser(data.user);
       // console.log("71", data.user);

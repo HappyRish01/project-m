@@ -1,9 +1,9 @@
 export interface Product {
-  id: number;
+  id?: string;
   name: string;
-  price: number;
+  price: number ; // Allow string for compatibility with form inputs
   hsnCode: string;
+  kgpunit: number ;
   gst: number;
-  category: string;
-  stock: number;
+  unit: string;
 }

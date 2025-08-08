@@ -27,3 +27,21 @@ enum Role {
   ADMIN
   EMPLOYEE
 }
+
+enum Unit {
+  Kata
+  Bag
+  Peti
+}
+
+model Product {
+  id         String   @id @default(cuid())
+  name        String
+  price       Float //ppq
+  hsnCode     String   @unique
+  kgpunit     Float
+  gst         Int 
+  unit        Unit
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

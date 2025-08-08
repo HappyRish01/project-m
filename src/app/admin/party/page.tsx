@@ -7,13 +7,14 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Party } from "@/types/party"
 
-interface AddPartyFormProps {
-  onSubmit: (party: Party) => void;
-  onCancel?: () => void;
-}
+// interface AddPartyFormProps {
+//   onSubmit: (party: Party) => void;
+//   onCancel?: () => void;
+// }
 
-export default function AddPartyForm({ onSubmit, onCancel }: AddPartyFormProps) {
+export default function AddPartyForm({ onSubmit, onCancel }: any) {
   const [formData, setFormData] = useState<Party>({
+    id: "", // Assuming id is generated elsewhere
     name: "",
     contactPerson: "",
     phone: "",
@@ -26,6 +27,7 @@ export default function AddPartyForm({ onSubmit, onCancel }: AddPartyFormProps) 
     onSubmit(formData);
     // Reset form after submission
     setFormData({
+      id: "", // Resetting id, assuming it will be set by the backend
       name: "",
       contactPerson: "",
       phone: "",

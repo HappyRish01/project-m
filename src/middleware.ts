@@ -1,24 +1,30 @@
-import { NextRequest } from "next/server";
-import { NextResponse } from "next/server";
-// import { cookies } from "next/headers";
-
+import { NextRequest, NextResponse } from "next/server";
 import { jwtVerify } from "jose";
+
 export async function middleware(request: NextRequest) {
-//   const { pathname } = request.nextUrl;
-//   console.log("Current pathname middleware:", pathname);
-
-  const isAdminRoute = request.nextUrl.pathname.startsWith("/admin");
-  const isEmployeeRoute = request.nextUrl.pathname.startsWith("/employee");
-
-  if (!isAdminRoute && !isEmployeeRoute) {
+  const { pathname } = request.nextUrl;
+  
+  const publicPaths = ["/api/auth/signin", "/api/auth/signup", "/api/auth/me", "/login"];
+  if (publicPaths.includes(pathname)) {
     return NextResponse.next();
   }
+
+  const isApiRoute = pathname.startsWith("/api");
+  const isAdminRoute = pathname.startsWith("/admin");
+  const isEmployeeRoute = pathname.startsWith("/employee");
+
+  
 
   const token = request.cookies.get("authToken")?.value;
 
   if (!token) {
-    const loginUrl = new URL("/login", request.url);
-    return NextResponse.redirect(loginUrl);
+    if (isApiRoute) {
+      return new NextResponse(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+    return NextResponse.redirect(new URL("/login", request.url));
   }
 
   try {
@@ -29,26 +35,39 @@ export async function middleware(request: NextRequest) {
 
     const role = payload.role as string;
 
-    if (role === 'ADMIN' && !isAdminRoute) {
-      return NextResponse.redirect(new URL('/unauthorised', request.url))
+    if (role === "ADMIN" && isEmployeeRoute) {
+      return isApiRoute
+        ? new NextResponse(JSON.stringify({ error: "Forbidden" }), {
+            status: 403,
+            headers: { "Content-Type": "application/json" },
+          })
+        : NextResponse.redirect(new URL("/unauthorised", request.url));
     }
 
-    if (role === 'EMPLOYEE' && !isEmployeeRoute) {
-      return NextResponse.redirect(new URL('/unauthorised', request.url))
+    if (role === "EMPLOYEE" && isAdminRoute) {
+      return isApiRoute
+        ? new NextResponse(JSON.stringify({ error: "Forbidden" }), {
+            status: 403,
+            headers: { "Content-Type": "application/json" },
+          })
+        : NextResponse.redirect(new URL("/unauthorised", request.url));
     }
 
-     return NextResponse.next()
-
-
+    return NextResponse.next();
   } catch (error) {
-    console.error('JWT decoding error:', error)
-    const loginUrl = new URL('/login', request.url)
-    return NextResponse.redirect(loginUrl)
+    console.error("JWT decoding error:", error);
+
+    if (isApiRoute) {
+      return new NextResponse(JSON.stringify({ error: "Invalid token" }), {
+        status: 401,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    return NextResponse.redirect(new URL("/login", request.url));
   }
 }
-export const config = {
-    // matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
-//   matcher: ["/admin/:path*", "/employee/:path*","/api/:path*"], 
-    matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
 
-};
+export const config = {
+  matcher: ["/admin/:path*", "/employee/:path*", "/api/:path*"],
+}

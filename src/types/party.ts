@@ -1,5 +1,5 @@
 export interface Party {
-  id?: number;
+  id: string;
   name: string;
   contactPerson: string;
   phone: string;
