@@ -14,7 +14,7 @@ datasource db {
 }
 
 model User {
-  id        String      @id @default(cuid())
+  id        String   @id @default(cuid())
   name      String
   email     String   @unique
   password  String
@@ -35,13 +35,24 @@ enum Unit {
 }
 
 model Product {
-  id         String   @id @default(cuid())
+  id        String   @id @default(cuid())
+  name      String
+  price     Float //ppq
+  hsnCode   String   @unique
+  kgpunit   Float
+  gst       Int
+  unit      Unit
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Bill {
+  id          Int      @id @default(autoincrement())
+  date        DateTime
   name        String
-  price       Float //ppq
-  hsnCode     String   @unique
-  kgpunit     Float
-  gst         Int 
-  unit        Unit
+  address     String?
+  panNumber   String?
+  GSTINumber  String?
+  totalAmount Float
   createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
 }

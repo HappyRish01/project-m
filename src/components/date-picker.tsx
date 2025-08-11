@@ -14,8 +14,8 @@ import {
 } from "@/components/ui/popover"
 
 interface DatePickerProps extends React.ComponentPropsWithoutRef<typeof Button> {
-  date: Date | undefined;
-  setDate: (date: Date | undefined) => void;
+  date: Date;
+  setDate: (date: Date ) => void;
   placeholder?: string;
 }
 
@@ -39,6 +39,7 @@ export function DatePicker({ date, setDate, placeholder = "Pick a date", classNa
       <PopoverContent className="w-auto p-0">
         <Calendar
           mode="single"
+          required={true}
           selected={date}
           onSelect={setDate}
           initialFocus

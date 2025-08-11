@@ -1,7 +1,10 @@
 export interface Bill {
-  id: number;
-  billNumber: string;
-  amount: number;
-  customerName: string;
+  id?: string;
+  totalAmount: number;
+  address: string;
+  panNumber: string;
+  GSTINumber: string;
+  name: string;
   date: string; // ISO date string, e.g., "YYYY-MM-DD"
+  createdAt?: string;
 }

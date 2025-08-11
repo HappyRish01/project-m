@@ -15,11 +15,10 @@ import { Button } from "@/components/ui/button"
 interface BillListProps {
   bills: Bill[]
   loading: boolean
-  hasMore: boolean
-  onDownloadPdf: (billId: number) => void // New prop for PDF download
+  onDownloadPdf: (billId: string) => void // New prop for PDF download
 }
 
-export function BillList({ bills, loading, hasMore, onDownloadPdf }: BillListProps) {
+export function BillList({ bills, loading, onDownloadPdf }: BillListProps) {
   return (
     <div className="space-y-3 max-h-[calc(100vh-280px)] overflow-y-auto custom-scrollbar">
       {bills.map((bill) => (
@@ -28,16 +27,16 @@ export function BillList({ bills, loading, hasMore, onDownloadPdf }: BillListPro
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div className="flex-1 min-w-0">
                 <h3 className="font-medium text-gray-900 truncate">
-                  Bill #{bill.billNumber}
+                  {/* Bill #{bill.billNumber} */}
                 </h3>
                 <p className="text-sm text-gray-600 truncate">
-                  Customer: {bill.customerName}
+                  Customer: {bill.name}
                 </p>
               </div>
               <div className="flex flex-col sm:items-end text-sm text-gray-700">
-                <span className="font-semibold text-lg">₹{bill.amount.toFixed(2)}</span>
+                <span className="font-semibold text-lg">₹{bill.totalAmount.toFixed(2)}</span>
                 <span className="text-xs text-gray-500">
-                  {format(new Date(bill.date), "MMM dd, yyyy")}
+                  {/* {format(new Date(bill.date), "MMM dd, yyyy")} */}
                 </span>
               </div>
               <DropdownMenu>
@@ -47,7 +46,7 @@ export function BillList({ bills, loading, hasMore, onDownloadPdf }: BillListPro
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={() => onDownloadPdf(bill.id)}>
+                  <DropdownMenuItem onClick={() => onDownloadPdf(bill.id? bill.id : "")}>
                     <Download className="mr-2 h-4 w-4" />
                     Download PDF
                   </DropdownMenuItem>
@@ -71,7 +70,7 @@ export function BillList({ bills, loading, hasMore, onDownloadPdf }: BillListPro
         </div>
       )}
 
-      {!loading && !hasMore && bills.length > 0 && (
+      {!loading  && bills.length > 0 && (
         <div className="text-center py-4 text-gray-500 text-sm">
           <p>You've reached the end of the list.</p>
         </div>

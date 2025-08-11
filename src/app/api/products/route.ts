@@ -6,7 +6,7 @@ import { productSchema } from "@/lib/validations/product";
 export async function GET() {
   try {
     const products = await prisma.product.findMany({
-      orderBy: { createdAt: "desc" },
+      orderBy: { createdAt: "asc" },
     });
 
     return NextResponse.json(products);

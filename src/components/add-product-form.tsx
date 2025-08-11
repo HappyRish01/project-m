@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -20,7 +20,7 @@ interface AddProductFormProps {
   onCancel?: () => void
 }
 
-const unit = [
+const unitOptions = [
   "Kata",
   "Peti",
   "Bag"
@@ -36,12 +36,27 @@ export function AddProductForm({ product, onSubmit, onCancel }: AddProductFormPr
     price: 0,
     hsnCode: "",
     gst: 18,
-    unit: unit[0]
+    unit: "Kata"
   })
-
-  useEffect(() => {
+  
+  // Product jo wha se aa rha hai
+  useMemo(() => {
     if (product) {
-      setFormData(product)
+      console.log("inside useEffect with product:", product)
+      setFormData({
+        
+        ...product,
+        unit: product.unit?.toString() ?? "",
+        
+        // unit: product.unit && product.unit
+        // unit:
+        //   unitOptions.find((u) => u.toLowerCase() === product.unit?.toLowerCase())?.toString() ??
+        //   unitOptions[0].toString(), // Ensure unit is a string
+        // unit: unit.find(u => u.toLowerCase() === product.unit?.toLowerCase()) || unit[0]
+      }
+
+    )
+    // setFormData(product)
     } else {
       setFormData({
         // id: "",
@@ -50,11 +65,11 @@ export function AddProductForm({ product, onSubmit, onCancel }: AddProductFormPr
         hsnCode: "",
         kgpunit: 0,
         gst: 18,
-        unit: unit[0] // Default unit
+        unit: "Kata"
       })
     }
   }, [product])
-
+  
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     onSubmit(formData)
@@ -68,17 +83,20 @@ export function AddProductForm({ product, onSubmit, onCancel }: AddProductFormPr
         price: 0,
         hsnCode: "",
         gst: 18,
-        unit: unit[0] // Reset to default unit
+        unit: "Kata"
       })
     }
   }
 
   const handleInputChange = (field: keyof Product, value: string | number) => {
-    setFormData((prev: any) => ({
+    setFormData(prev => ({
       ...prev,
       [field]: value
     }))
   }
+    useEffect(() => {
+    console.log("formData updated:", formData);
+  }, [formData.unit]);
 
   return (
     <Card className="sticky top-4">
@@ -121,31 +139,37 @@ export function AddProductForm({ product, onSubmit, onCancel }: AddProductFormPr
                 type="number"
                 step="0.1"
                 min="0"
-                value={formData.price}
+                value={formData.price === 0 ? "" : formData.price} // Handle zero value
                 onChange={(e) => handleInputChange('price', parseFloat(e.target.value))}
                 // placeholder="0.00"
                 required
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="gst">Unit</Label>
+              <Label htmlFor="unit">Unit</Label>
               <Select 
-                // value={formData.unit}
-                defaultValue={formData.unit.toString()} 
+                // defaultValue={formData.unit.toString()} 
                 // value={String(formData.unit.toString())} 
+                value={formData.unit} // Ensure value is a string
+                // value={product ? product.unit.toString() : ""}
                 onValueChange={(value) =>{
-                  console.log("Selected unit:", value.toString())
-                  console.log("Selected unit 136:", formData.unit.toString())
-                  handleInputChange('unit', value.toString())
+                  // console.log("Selected value:", value)
+                  // console.log("Selected product:", product ? product.unit.toString() : "")
+                  // console.log("Selected formData 136:", formData.unit.toString())
+                  // console.log("after setting formData:", formData)
+                      // setFormData(); // update state
+                      // setFormData((prev) => ({ ...prev, unit: value }));
+                  handleInputChange('unit', value)
                 }
-              } 
+              }
+ 
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select unit" />
                 </SelectTrigger>
                 <SelectContent>
-                  {unit.map((rate) => (
-                    <SelectItem key={rate} value={rate}>
+                  {unitOptions.map((rate) => (
+                    <SelectItem key={rate.toString()} value={rate}>
                       {rate}
                     </SelectItem>
                   ))}
@@ -186,7 +210,7 @@ export function AddProductForm({ product, onSubmit, onCancel }: AddProductFormPr
                 type="number"
                 step="0.1"
                 min="0"
-                value={formData.kgpunit}
+                value={formData.kgpunit === 0 ? "" : formData.kgpunit} // Handle zero value
                 onChange={(e) => handleInputChange('kgpunit', parseFloat(e.target.value) || "")}
                 // placeholder="0.00"
                 required

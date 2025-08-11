@@ -26,6 +26,7 @@ export default function CatalogPage() {
         }
         const data = await res.json();
         setProducts(data);
+        toast("Products fetched successfully!");
       } catch (error: any) {
         console.error("Error fetching products:", error);
         toast("Error fetching products: " + error.message);
@@ -46,7 +47,7 @@ export default function CatalogPage() {
     })
     if (!res.ok) {
       const errorData = await res.json();
-      toast("Error creating product:", errorData);
+      toast("Error creating product:", errorData.message);
       return;
     }
     const createdProduct = await res.json();
@@ -95,6 +96,7 @@ export default function CatalogPage() {
       toast("Error deleting product: " + errorData.message);
       return;
     }
+    toast("Product deleted successfully!");
     setProducts(products.filter(p => p.id !== productId))
   }
 

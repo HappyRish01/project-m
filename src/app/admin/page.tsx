@@ -1,184 +1,126 @@
-"use client"
+"use client";
 
-import { useState, useEffect, useMemo, useRef, useCallback } from "react"
-import { BillList } from "@/components/bill-list"
-import { Input } from "@/components/ui/input"
-import { DatePicker } from "@/components/date-picker"
-import { Bill } from "@/types/bill"
-import { Button } from "@/components/ui/button"
-import { XCircle } from 'lucide-react'
+import { useState, useEffect } from "react";
+import { BillList } from "@/components/bill-list";
+import { Input } from "@/components/ui/input";
+import { DatePicker } from "@/components/date-picker";
+import { Bill } from "@/types/bill";
+import { Button } from "@/components/ui/button";
+import { Loader, XCircle } from "lucide-react";
+import { toast } from "sonner";
+import { se } from "date-fns/locale";
 
-// Mock data for bills
-const allMockBills: Bill[] = Array.from({ length: 5 }, (_, i) => ({
-  id: i + 1,
-  billNumber: `BILL-${1000 + i}`,
-  amount: parseFloat((Math.random() * 1000 + 50).toFixed(2)),
-  customerName: `Customer ${String.fromCharCode(65 + (i % 26))}${i % 10}`,
-  date: new Date(2023, Math.floor(Math.random() * 12), Math.floor(Math.random() * 28) + 1).toISOString().split('T')[0],
-}))
-
-const ITEMS_PER_PAGE = 15
 
 export default function AdminPage() {
-  const [bills, setBills] = useState<Bill[]>([])
-  const [loading, setLoading] = useState(false)
-  const [hasMore, setHasMore] = useState(true)
-  const [page, setPage] = useState(1)
-  const [searchQuery, setSearchQuery] = useState("")
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined) // For exact date
-  const [startDate, setStartDate] = useState<Date | undefined>(undefined) // For date range
-  const [endDate, setEndDate] = useState<Date | undefined>(undefined) // For date range
+  const [bills, setBills] = useState<Bill[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
-  const observerTarget = useRef<HTMLDivElement>(null)
+  const buildQuery = (date: Date) => {
+    const params = new URLSearchParams();
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const dateString = `${year}-${month}-${day}`
+    params.set("selectedDate", dateString);
+    // if (searchQuery) params.set("search", searchQuery); 
+    return `/api/bills?${params.toString()}`;
+  };
 
-  const applyFiltersAndSearch = useCallback((data: Bill[]) => {
-    let filtered = data
+  const fetchBills = async (date:Date) => {
+    setLoading(true);
+    try {
+      const res = await fetch(buildQuery(date))
+      const data = await res.json();
+      
 
-    // Apply search query
-    if (searchQuery) {
-      const lowerCaseQuery = searchQuery.toLowerCase()
-      filtered = filtered.filter(bill =>
-        bill.customerName.toLowerCase().includes(lowerCaseQuery) ||
-        bill.billNumber.toLowerCase().includes(lowerCaseQuery) ||
-        bill.amount.toString().includes(lowerCaseQuery) // Search by amount as string
-      )
-    }
-
-    // Apply date filters based on which state is populated
-    if (selectedDate) {
-      // Exact date filter takes precedence
-      filtered = filtered.filter(bill => {
-        const billDateString = new Date(bill.date).toISOString().split('T')[0];
-        const selectedDateString = selectedDate.toISOString().split('T')[0];
-        return billDateString === selectedDateString;
-      });
-    } else if (startDate || endDate) {
-      // Date range filter if exact date is not selected
-      if (startDate) {
-        const startOfDay = new Date(startDate);
-        startOfDay.setHours(0, 0, 0, 0);
-        filtered = filtered.filter(bill => new Date(bill.date) >= startOfDay);
+      if (!res.ok) {
+        toast.error(`Error: ${data.message || "Failed to fetch bills"}`);
+        throw new Error(data.message || "Failed to fetch bills");
       }
-      if (endDate) {
-        const endOfDay = new Date(endDate);
-        endOfDay.setHours(23, 59, 59, 999);
-        filtered = filtered.filter(bill => new Date(bill.date) <= endOfDay);
-      }
+      setBills(data.bills || []);
+    } catch (err: any) {
+      console.error(err.message || "Failed to fetch bills");
+    } finally {
+      setLoading(false);
     }
+  };
 
-    // Sort by date descending (most recent first)
-    filtered.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  //   if (
+  //     document.body.scrollHeight - 50 <
+  //     window.scrollY + window.innerHeight
+  //   ) {
+  //     if (!loading && hasMore) {
+  //       setScrollLoading(true);
+  //     }
+  //   }
+  // };
 
-    return filtered
-  }, [searchQuery, selectedDate, startDate, endDate]) // All date states are dependencies
+  // const debouncedHandleScroll = useCallback(debounce(handleScroll, 400), [
+  //   loading,
+  //   hasMore,
+  // ]);
 
-  const fetchBills = useCallback(async (currentPage: number, reset = false) => {
-    if (loading) return
+  // useEffect(() => {
+  //   if (hasMore) {
+  //     window.addEventListener("scroll", debouncedHandleScroll);
+  //   }
+  //   return () => {
+  //     window.removeEventListener("scroll", debouncedHandleScroll);
+  //   };
+  // }, [hasMore, debouncedHandleScroll]);
 
-    setLoading(true)
-    // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 500))
+  // Load more when scrollLoading turns true
+  // useEffect(() => {
+  //   if (scrollLoading && hasMore) {
+  //     setSkip((prev) => prev + ITEMS_PER_PAGE);
+  //     setPage((prev) => prev + 1);
+  //   }
+  // }, [scrollLoading, hasMore]);
 
-    const allFilteredBills = applyFiltersAndSearch(allMockBills)
-    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
-    const endIndex = startIndex + ITEMS_PER_PAGE
-    const newBills = allFilteredBills.slice(startIndex, endIndex)
+  // // Fetch bills on page change
+  // useEffect(() => {
+  //   if (page === 1) return;
+  //   fetchBills();
+  // }, [page]);
 
-    if (reset) {
-      setBills(newBills)
-    } else {
-      setBills(prevBills => [...prevBills, ...newBills])
-    }
-
-    setHasMore(endIndex < allFilteredBills.length)
-    setLoading(false)
-  }, [loading, applyFiltersAndSearch])
-
-  // Initial fetch and when filters/search change
+  // Initial + filter changes
   useEffect(() => {
-    setPage(1)
-    setHasMore(true)
-    fetchBills(1, true)
-  }, [searchQuery, selectedDate, startDate, endDate, fetchBills]) // Dependencies updated
-
-  // Infinite scrolling observer
-  useEffect(() => {
-    const observer = new IntersectionObserver(entries => {
-      if (entries[0].isIntersecting && hasMore && !loading) {
-        setPage(prevPage => prevPage + 1)
-      }
-    }, { threshold: 1.0 })
-
-    if (observerTarget.current) {
-      observer.observe(observerTarget.current)
-    }
-
-    return () => {
-      if (observerTarget.current) {
-        observer.unobserve(observerTarget.current)
-      }
-    }
-  }, [hasMore, loading])
-
-  // Fetch more bills when page changes (due to infinite scroll)
-  useEffect(() => {
-    if (page > 1) {
-      fetchBills(page)
-    }
-  }, [page, fetchBills])
-
-  // Handlers for date pickers to ensure mutual exclusivity
-  const handleSetSelectedDate = (date: Date | undefined) => {
-    setSelectedDate(date)
-    if (date) { // If an exact date is selected, clear range dates
-      setStartDate(undefined)
-      setEndDate(undefined)
-    }
-  }
-
-  const handleSetStartDate = (date: Date | undefined) => {
-    setStartDate(date)
-    if (date) { // If a start date is selected, clear exact date
-      setSelectedDate(undefined)
-    }
-  }
-
-  const handleSetEndDate = (date: Date | undefined) => {
-    setEndDate(date)
-    if (date) { // If an end date is selected, clear exact date
-      setSelectedDate(undefined)
-    }
-  }
+    console.log("Fetching bills for date:", selectedDate.toISOString());
+    fetchBills(new Date());
+  },
+  []);
 
   const handleClearFilters = () => {
-    setSearchQuery("")
-    setSelectedDate(undefined)
-    setStartDate(undefined)
-    setEndDate(undefined)
-  }
+    setSearchQuery("");
+    setSelectedDate(new Date());
+    fetchBills(new Date());
+    // setStartDate(undefined);
+    // setEndDate(undefined);
+  };
 
-  const handleDownloadPdf = (billId: number) => {
-    // In a real application, you would make an API call here
-    // For example: fetch(`/api/bills/${billId}/download-pdf`)
-    // The backend would generate the PDF and send it as a file download.
-    console.log(`Simulating PDF download for Bill ID: ${billId}`)
-    alert(`Downloading PDF for Bill ID: ${billId}. (This is a simulation)`)
-  }
+  const handleDownloadPdf = (billId: string) => {
+    alert(`Downloading PDF for Bill ID: ${billId}. (Simulation)`);
+  };
 
   return (
     <div className="p-4 sm:p-6 md:p-8">
       <div className="mb-8">
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Bill Management</h1>
-        <p className="text-gray-600 mt-2">View and filter all customer bills.</p>
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
+          Bill Management
+        </h1>
+        <p className="text-gray-600 mt-2">
+          View and filter all customer bills.
+        </p>
       </div>
 
       <div className="space-y-6">
-        {/* Filters and Search */}
+        {/* Filters */}
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 items-end">
           <div className="space-y-2">
-            <label htmlFor="search" className="text-sm font-medium text-gray-700">Search</label>
+            <label className="text-sm font-medium text-gray-700">Search</label>
             <Input
-              id="search"
               type="text"
               placeholder="Search by name, bill #, or amount..."
               value={searchQuery}
@@ -186,49 +128,55 @@ export default function AdminPage() {
             />
           </div>
 
-          {/* Exact Date Picker (visible if no range dates are set) */}
-          {!(startDate || endDate) && (
+          {!searchQuery && (
             <div className="space-y-2">
-              <label htmlFor="exactDate" className="text-sm font-medium text-gray-700">Exact Date</label>
+              <label className="text-sm font-medium text-gray-700">
+                Exact Date
+              </label>
               <DatePicker
-                id="exactDate"
                 date={selectedDate}
-                setDate={handleSetSelectedDate}
+                setDate={setSelectedDate}
                 placeholder="Pick exact date"
               />
             </div>
           )}
 
-          {/* Date Range Pickers (visible if no exact date is set) */}
-          {!selectedDate && (
+          <Button
+            variant="outline"
+            onClick={() => fetchBills(selectedDate)}
+            className="mt-6"
+          >
+            <Loader className="h-4 w-4" />
+            Load Bills
+          </Button>
+
+          {/* {!selectedDate && (
             <>
               <div className="space-y-2">
-                <label htmlFor="startDate" className="text-sm font-medium text-gray-700">From Date</label>
+                <label className="text-sm font-medium text-gray-700">
+                  From Date
+                </label>
                 <DatePicker
-                  id="startDate"
                   date={startDate}
-                  setDate={handleSetStartDate}
+                  setDate={setStartDate}
                   placeholder="Start Date"
                 />
               </div>
               <div className="space-y-2">
-                <label htmlFor="endDate" className="text-sm font-medium text-gray-700">To Date</label>
+                <label className="text-sm font-medium text-gray-700">
+                  To Date
+                </label>
                 <DatePicker
-                  id="endDate"
                   date={endDate}
-                  setDate={handleSetEndDate}
+                  setDate={setEndDate}
                   placeholder="End Date"
                 />
               </div>
             </>
-          )}
+          )} */}
 
-          {(searchQuery || selectedDate || startDate || endDate) && ( // Condition updated for clear button
-            <Button
-              variant="outline"
-              onClick={handleClearFilters}
-              className="col-span-1 md:col-span-1 lg:col-span-1 flex items-center gap-2"
-            >
+          {(searchQuery || selectedDate) && (
+            <Button variant="outline" onClick={handleClearFilters}>
               <XCircle className="h-4 w-4" />
               Clear Filters
             </Button>
@@ -237,17 +185,15 @@ export default function AdminPage() {
 
         {/* Bill List */}
         <div className="space-y-4">
-          <h2 className="text-xl font-semibold text-gray-800">All Bills</h2>
-          <BillList 
-            bills={bills} 
-            loading={loading} 
-            hasMore={hasMore} 
-            onDownloadPdf={handleDownloadPdf} // Pass the handler
+          <h2 className="text-xl font-semibold text-gray-800">Bill for Today</h2>
+          <BillList
+            bills={bills}
+            loading={loading}
+            onDownloadPdf={handleDownloadPdf}
           />
-          {/* Observer target for infinite scrolling */}
-          <div ref={observerTarget} className="h-1" />
+          
         </div>
       </div>
     </div>
-  )
+  );
 }
