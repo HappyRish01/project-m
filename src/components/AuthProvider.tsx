@@ -37,7 +37,7 @@ export const AuthProvider = ({
           // Auto-redirect if already logged in
           if (userData) {
             // window.location.href = userData.role === 'ADMIN' ? '/admin' : '/employee';
-            router.push(userData.role === 'ADMIN' ? '/admin' : '/employee');
+            router.push(userData.role === 'ADMIN' ? '/ ' : '/employee');
           }
         }
       } catch (error) {

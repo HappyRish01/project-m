@@ -120,7 +120,7 @@ export default function Sidebar({ onLinkClick }: SidebarProps) {
       {/* Footer */}
       <div className="mt-auto pt-4">
         <div className="text-xs text-gray-500 text-center">
-          <p>Admin Dashboard v1.0</p>
+          <p>Made with 💝 Ayush & Rish</p>
         </div>
       </div>
     </div>

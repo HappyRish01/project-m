@@ -1,4 +1,4 @@
-import {NextResponse} from "next/server";
+import { NextResponse } from "next/server";
 
 import prisma from "@/lib/prisma";
 
@@ -6,75 +6,113 @@ export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
     const dateParam = searchParams.get("selectedDate");
+    let searchQuery = searchParams.get("search");
 
-    if(!dateParam) {
-      return NextResponse.json({ error: "Date parameter is required" }, { status: 400 });
+    if (searchQuery) {
+      searchQuery = decodeURIComponent(searchQuery.replace(/\+/g, " "));
+      const where: any = {};
+      where.OR = [
+        { name: { contains: searchQuery, mode: "insensitive" } },
+        { id: isNaN(Number(searchQuery)) ? undefined : Number(searchQuery) },
+        {
+          totalAmount: isNaN(Number(searchQuery))
+            ? undefined
+            : Number(searchQuery),
+        },
+      ];
+
+      const bills = await prisma.bill.findMany({
+        where,
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+
+      return NextResponse.json({ bills });
     }
 
-    // const targetDate = new Date(dateParam + "T00:00:00.000"); // Ensure the date is in UTC
-
-    // console.log("Fetching bills for date:", targetDate);
-    
-    // const startOfDay = new Date(targetDate)
-    // const endOfDay = new Date(targetDate)
-    //     endOfDay.setHours(23, 59, 59, 999);
-
-
-    // const startOfDay = new Date(  
-    //   targetDate.getFullYear(),
-    //   targetDate.getMonth(),
-    //   targetDate.getDate(),
-    //   0, 0, 0, 0
-    // );
-
-    // const endOfDay = new Date(
-    //   targetDate.getFullYear(),
-    //   targetDate.getMonth(),
-    //   targetDate.getDate(),
-    //   23, 59, 59, 999
-    // );
-
-    // const [year, month, day] = dateParam.split("-").map(Number);
-
-    // // Create times in IST
-    // const startOfDayIST = new Date(year, month - 1, day, 0, 0, 0, 0);
-    // const endOfDayIST = new Date(year, month - 1, day, 23, 59, 59, 999);
-
-    // // Convert IST to UTC for database query
-    // const startOfDayUTC = new Date(startOfDayIST.getTime() - (5.5 * 60 * 60 * 1000));
-    // const endOfDayUTC = new Date(endOfDayIST.getTime() - (5.5 * 60 * 60 * 1000));
-
-    // console.log("Fetching bills for date:", startOfDayUTC.toISOString(), "to", endOfDayUTC.toISOString());
-
-
+    if (!dateParam) {
+      return NextResponse.json(
+        { error: "Date parameter is required" },
+        { status: 400 }
+      );
+    }
 
     const bills = await prisma.bill.findMany({
-  where: {
-    date: {
-      gte: new Date(`${dateParam}T00:00:00+05:30`), // India timezone
-      lte: new Date(`${dateParam}T23:59:59.999+05:30`),
-    }
-  },
-  orderBy: {
-    createdAt: "desc",
-  },
-});
+      where: {
+        date: {
+          gte: new Date(`${dateParam}T00:00:00+05:30`), // India timezone
+          lte: new Date(`${dateParam}T23:59:59.999+05:30`),
+        },
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
 
-    // const bills = await prisma.bill.findMany({
-    //   where: {
-    //     date: {
-    //       gte: startOfDay,
-    //       lte: endOfDay,
-    //     }
-    //   },
-    //   orderBy: {
-    //     createdAt: "desc",  
-    //   },
-    // });
-
-    return NextResponse.json({bills});
+    return NextResponse.json({ bills });
   } catch (error) {
     console.error("Error fetching bills:", error);
-    return NextResponse.json({ error: "Failed to fetch bills" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to fetch bills" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function POST(req: Request) {
+  const body = await req.json();
+  const { items, billingDetails, subTotal, gstBreakdown, totalGst , totalAmount } = body;
+  console.log('66', subTotal, gstBreakdown, totalGst , totalAmount)
+
+  const productIds = items.map((item: any) => item.id);
+
+  const products = await prisma.product.findMany({
+    where: { id: { in: productIds } },
+  });
+
+  try {
+    const bill = await prisma.bill.create({
+      data: {
+        date: new Date(billingDetails.date),
+        name: billingDetails.customerName,
+        address: billingDetails.address,
+        panNumber: billingDetails.panNumber,
+        GSTINumber: billingDetails.gstinNumber,
+        vehicleNumber: billingDetails.vehicleNumber,
+        totalAmount,
+        subTotal,
+        gstBreakdown,
+        totalGst,
+        state: billingDetails.state,
+        stateCode: billingDetails.stateCode,
+        items: {
+          create: items.map((cartItem: any) => {
+            const product = products.find((p) => p.id === cartItem.id);
+            if (!product) throw new Error(`Product not found: ${cartItem.id}`);
+            return {
+              productId: product.id,
+              name: product.name,
+              hsnCode: product.hsnCode,
+              quantity: cartItem.quantity,
+              price: product.price,
+              gst: product.gst,
+              kgpunit: product.kgpunit,
+              unit: product.unit,
+            };
+          }),
+        },
+      },
+      include: {
+        items: true,
+      },
+    });
+
+    return new Response(JSON.stringify(bill), { status: 201 });
+  } catch (err) {
+    console.error(err);
+    return new Response(JSON.stringify({ error: "Failed to create bill" }), {
+      status: 500,
+    });
   }
 }

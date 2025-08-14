@@ -6,13 +6,13 @@ import {
   Sheet,
   SheetContent,
   SheetTrigger,
-  SheetTitle,
 } from "@/components/ui/sheet";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-is-mobile";
-import { Dialog, DialogTitle } from "@radix-ui/react-dialog";
+import {  DialogTitle } from "@radix-ui/react-dialog";
+import { CartProvider } from "@/components/CartProvider";
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -21,6 +21,7 @@ interface AdminLayoutProps {
 export default function AdminLayout({ children }: AdminLayoutProps) {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const isMobile = useIsMobile();
+
 
   return (
     <div className="flex min-h-screen bg-gray-50">
@@ -64,8 +65,9 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             </header>
           </Sheet>
         )}
-
+        <CartProvider>
         {children}
+        </CartProvider>
       </main>
     </div>
   );

@@ -30,7 +30,7 @@ const gstRates = [0, 5, 12, 18, 28]
 
 export function AddProductForm({ product, onSubmit, onCancel }: AddProductFormProps) {
   const [formData, setFormData] = useState<Product>({
-    // id: "",
+    id: "",
     name: "",
     kgpunit: 0,
     price: 0,
@@ -59,7 +59,7 @@ export function AddProductForm({ product, onSubmit, onCancel }: AddProductFormPr
     // setFormData(product)
     } else {
       setFormData({
-        // id: "",
+        id: "",
         name: "",
         price:0,
         hsnCode: "",
@@ -77,7 +77,7 @@ export function AddProductForm({ product, onSubmit, onCancel }: AddProductFormPr
     if (!product) {
       // Reset form only when adding new product
       setFormData({
-        // id: "",
+        id: "",
         name: "",
         kgpunit: 0,
         price: 0,
@@ -137,7 +137,7 @@ export function AddProductForm({ product, onSubmit, onCancel }: AddProductFormPr
               <Input
                 id="price"
                 type="number"
-                step="0.1"
+                step="1"
                 min="0"
                 value={formData.price === 0 ? "" : formData.price} // Handle zero value
                 onChange={(e) => handleInputChange('price', parseFloat(e.target.value))}
@@ -208,7 +208,7 @@ export function AddProductForm({ product, onSubmit, onCancel }: AddProductFormPr
               <Input
                 id="kgpunit"
                 type="number"
-                step="0.1"
+                step="1"
                 min="0"
                 value={formData.kgpunit === 0 ? "" : formData.kgpunit} // Handle zero value
                 onChange={(e) => handleInputChange('kgpunit', parseFloat(e.target.value) || "")}

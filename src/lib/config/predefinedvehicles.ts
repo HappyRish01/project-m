@@ -1,0 +1,12 @@
+export const predefinedVehicles = [
+  "DL01AB1234",
+  "MH02CD5678",
+  "KA03EF9012",
+  "GJ04GH3456",
+  "TN05IJ7890",
+  "RJ06KL1122",
+  "UP07MN3344",
+  "PB08OP5566",
+  "HR09QR7788",
+  "WB10ST9900"
+]

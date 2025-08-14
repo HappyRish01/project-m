@@ -44,15 +44,39 @@ model Product {
   unit      Unit
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  BillItem BillItem[]
 }
 
 model Bill {
-  id          Int      @id @default(autoincrement())
-  date        DateTime
-  name        String
-  address     String?
-  panNumber   String?
-  GSTINumber  String?
-  totalAmount Float
-  createdAt   DateTime @default(now())
+  id            Int        @id @default(autoincrement())
+  date          DateTime
+  name          String
+  address       String?
+  panNumber     String?
+  GSTINumber    String?
+  totalAmount   Float
+  subTotal      Float?
+  totalGst      Float?
+  gstBreakdown  Json?
+  stateCode     String?
+  state         String?
+  vehicleNumber String?
+  items         BillItem[]
+  createdAt     DateTime   @default(now())
+}
+
+model BillItem {
+  id        Int     @id @default(autoincrement())
+  billId    Int
+  productId String? // optional in case product is deleted later
+  name      String
+  hsnCode   String
+  quantity  Float
+  price     Float
+  gst       Int
+   kgpunit    Float?
+  unit       Unit?
+  bill    Bill     @relation(fields: [billId], references: [id])
+  product Product? @relation(fields: [productId], references: [id])
 }

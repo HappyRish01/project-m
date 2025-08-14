@@ -8,7 +8,6 @@ import { Bill } from "@/types/bill";
 import { Button } from "@/components/ui/button";
 import { Loader, XCircle } from "lucide-react";
 import { toast } from "sonner";
-import { se } from "date-fns/locale";
 
 
 export default function AdminPage() {
@@ -17,21 +16,33 @@ export default function AdminPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
-  const buildQuery = (date: Date) => {
+  useEffect(() => {
+    const fetchData = async () => {
+      await fetchBills(selectedDate);
+    };
+    fetchData();
+  }, []);
+
+  const buildQuery = (date: Date , query: string = searchQuery) => {
     const params = new URLSearchParams();
+    if (query && query.trim() !== "") {
+    // if (searchQuery) {
+      params.set("search", query); 
+      return `/api/bills?${params.toString()}`;
+    }
+
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
     const dateString = `${year}-${month}-${day}`
     params.set("selectedDate", dateString);
-    // if (searchQuery) params.set("search", searchQuery); 
     return `/api/bills?${params.toString()}`;
   };
 
-  const fetchBills = async (date:Date) => {
+  const fetchBills = async (date:Date , query:string = searchQuery) => {
     setLoading(true);
     try {
-      const res = await fetch(buildQuery(date))
+      const res = await fetch(buildQuery(date , query))
       const data = await res.json();
       
 
@@ -47,55 +58,10 @@ export default function AdminPage() {
     }
   };
 
-  //   if (
-  //     document.body.scrollHeight - 50 <
-  //     window.scrollY + window.innerHeight
-  //   ) {
-  //     if (!loading && hasMore) {
-  //       setScrollLoading(true);
-  //     }
-  //   }
-  // };
-
-  // const debouncedHandleScroll = useCallback(debounce(handleScroll, 400), [
-  //   loading,
-  //   hasMore,
-  // ]);
-
-  // useEffect(() => {
-  //   if (hasMore) {
-  //     window.addEventListener("scroll", debouncedHandleScroll);
-  //   }
-  //   return () => {
-  //     window.removeEventListener("scroll", debouncedHandleScroll);
-  //   };
-  // }, [hasMore, debouncedHandleScroll]);
-
-  // Load more when scrollLoading turns true
-  // useEffect(() => {
-  //   if (scrollLoading && hasMore) {
-  //     setSkip((prev) => prev + ITEMS_PER_PAGE);
-  //     setPage((prev) => prev + 1);
-  //   }
-  // }, [scrollLoading, hasMore]);
-
-  // // Fetch bills on page change
-  // useEffect(() => {
-  //   if (page === 1) return;
-  //   fetchBills();
-  // }, [page]);
-
-  // Initial + filter changes
-  useEffect(() => {
-    console.log("Fetching bills for date:", selectedDate.toISOString());
-    fetchBills(new Date());
-  },
-  []);
-
   const handleClearFilters = () => {
-    setSearchQuery("");
+    setSearchQuery(""); //not working
     setSelectedDate(new Date());
-    fetchBills(new Date());
+    fetchBills(new Date() , "");
     // setStartDate(undefined);
     // setEndDate(undefined);
   };
@@ -125,6 +91,7 @@ export default function AdminPage() {
               placeholder="Search by name, bill #, or amount..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
+            
             />
           </div>
 
@@ -185,7 +152,7 @@ export default function AdminPage() {
 
         {/* Bill List */}
         <div className="space-y-4">
-          <h2 className="text-xl font-semibold text-gray-800">Bill for Today</h2>
+          <h2 className="text-xl font-semibold text-gray-800">Bills will be shown below</h2>
           <BillList
             bills={bills}
             loading={loading}

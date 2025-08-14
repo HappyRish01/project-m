@@ -2,7 +2,6 @@
 
 import { Card, CardContent } from "@/components/ui/card"
 import { Bill } from "@/types/bill"
-import { format } from "date-fns"
 import { Loader2, Download, MoreVertical } from 'lucide-react' // Import Download icon
 import {
   DropdownMenu,
@@ -27,9 +26,9 @@ export function BillList({ bills, loading, onDownloadPdf }: BillListProps) {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div className="flex-1 min-w-0">
                 <h3 className="font-medium text-gray-900 truncate">
-                  {/* Bill #{bill.billNumber} */}
+                  Bill Number # {bill.id}
                 </h3>
-                <p className="text-sm text-gray-600 truncate">
+                <p className="text-sm text-black-600 truncate">
                   Customer: {bill.name}
                 </p>
               </div>
