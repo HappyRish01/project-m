@@ -53,6 +53,7 @@ model Bill {
   date          DateTime
   name          String
   address       String?
+  city String?
   panNumber     String?
   GSTINumber    String?
   totalAmount   Float

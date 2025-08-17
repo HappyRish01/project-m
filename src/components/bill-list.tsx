@@ -10,6 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
+import { format } from "date-fns"
 
 interface BillListProps {
   bills: Bill[]
@@ -26,17 +27,19 @@ export function BillList({ bills, loading, onDownloadPdf }: BillListProps) {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div className="flex-1 min-w-0">
                 <h3 className="font-medium text-gray-900 truncate">
-                  Bill Number # {bill.id}
+                  Bill Number : {bill.id}
                 </h3>
                 <p className="text-sm text-black-600 truncate">
-                  Customer: {bill.name}
+                  Customer Name : {bill.name}
                 </p>
               </div>
               <div className="flex flex-col sm:items-end text-sm text-gray-700">
+
+                {/* <p className="text-sm text-gray-700 truncate">
+                  {bill.date}
+                </p> */}
                 <span className="font-semibold text-lg">₹{bill.totalAmount.toFixed(2)}</span>
-                <span className="text-xs text-gray-500">
-                  {/* {format(new Date(bill.date), "MMM dd, yyyy")} */}
-                </span>
+                  {format(new Date(bill.date), "MMM dd, yyyy")}
               </div>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>

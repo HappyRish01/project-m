@@ -21,7 +21,7 @@ export default function CartPage() {
     getTotalGST,
   } = useCart();
   const [billingDetails, setBillingDetails] = useState<BillingDetails>({
-    date: new Date().toLocaleDateString('en-CA'),
+    date: new Date().toLocaleDateString("en-CA"),
     customerName: "",
     address: "",
     city: "",
@@ -65,25 +65,35 @@ export default function CartPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-        items: items.map(item => ({
+          items: items.map((item) => ({
             id: item.id,
-            quantity: item.quantity
+            quantity: item.quantity,
           })),
           billingDetails,
           totalAmount,
           subTotal,
-        gstBreakdown,
-        totalGst,
+          gstBreakdown,
+          totalGst,
         }),
       });
-      if(!res.ok) {
-        toast("Error occured")
+      if (!res.ok) {
+        toast("Error occured");
       }
-    } catch (error: any) {
-      toast("Error occured" , error.message)
 
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = url;
+      // Major fix needed bill id
+      // SGST CGST FIX
+      a.download = `bill-ayush.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    } catch (error: any) {
+      toast("Error occured", error.message);
     }
-    alert("Bill created successfully!");
 
     // Clear cart after successful bill creation
     clearCart();

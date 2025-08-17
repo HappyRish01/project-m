@@ -8,6 +8,7 @@ import { Bill } from "@/types/bill";
 import { Button } from "@/components/ui/button";
 import { Loader, XCircle } from "lucide-react";
 import { toast } from "sonner";
+import { error } from "console";
 
 
 export default function AdminPage() {
@@ -66,8 +67,38 @@ export default function AdminPage() {
     // setEndDate(undefined);
   };
 
-  const handleDownloadPdf = (billId: string) => {
-    alert(`Downloading PDF for Bill ID: ${billId}. (Simulation)`);
+  const handleDownloadPdf = async(billId: string) => {
+    setLoading(true);
+    try{
+      const res = await fetch("/api/bills/generate",{
+        method: "POST",
+        headers: {"Content-type": "application/json"},
+        body: JSON.stringify({billId})
+
+      })
+
+      console.log("80",res)
+
+      if(!res.ok) {
+        throw new Error("Failed to generate bill")
+      }
+
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob)
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `bill-${billId}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    }catch(error:any) {
+      console.error(error)
+      alert("Error generating bill pdf")
+    } finally {
+      setLoading(false)
+    }
+
   };
 
   return (
@@ -116,32 +147,6 @@ export default function AdminPage() {
             <Loader className="h-4 w-4" />
             Load Bills
           </Button>
-
-          {/* {!selectedDate && (
-            <>
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">
-                  From Date
-                </label>
-                <DatePicker
-                  date={startDate}
-                  setDate={setStartDate}
-                  placeholder="Start Date"
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">
-                  To Date
-                </label>
-                <DatePicker
-                  date={endDate}
-                  setDate={setEndDate}
-                  placeholder="End Date"
-                />
-              </div>
-            </>
-          )} */}
-
           {(searchQuery || selectedDate) && (
             <Button variant="outline" onClick={handleClearFilters}>
               <XCircle className="h-4 w-4" />

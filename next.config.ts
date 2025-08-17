@@ -10,7 +10,8 @@ const nextConfig: NextConfig = {
         permanent: true,
       }
     ]
-  }
+  } ,
+  serverExternalPackages: ["pdfkit"]
 
 };
 

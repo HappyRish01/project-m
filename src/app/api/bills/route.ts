@@ -77,6 +77,7 @@ export async function POST(req: Request) {
         date: new Date(billingDetails.date),
         name: billingDetails.customerName,
         address: billingDetails.address,
+        city: billingDetails.city,
         panNumber: billingDetails.panNumber,
         GSTINumber: billingDetails.gstinNumber,
         vehicleNumber: billingDetails.vehicleNumber,
@@ -108,11 +109,13 @@ export async function POST(req: Request) {
       },
     });
 
-    return new Response(JSON.stringify(bill), { status: 201 });
+    return NextResponse.json({bill}) 
   } catch (err) {
     console.error(err);
-    return new Response(JSON.stringify({ error: "Failed to create bill" }), {
-      status: 500,
-    });
+
+    return NextResponse.json({
+      error: "Internal server error failed to create bill",
+      status: 500
+    })
   }
 }
