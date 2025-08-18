@@ -76,8 +76,8 @@ export async function POST(req: Request) {
         }
       );
       doc.text(
-        "State :DELHI                                                                    :49049548",
-        { align: "center" }
+        "State :DELHI                                                                    ",
+        { align: "left" }
       );
       doc.text(
         "State code :07                                                                      Res.:",
@@ -115,7 +115,7 @@ export async function POST(req: Request) {
         "Item              Hsn Code       Qty.    Unit       Weight        Rate        Amount"
       );
       doc.text(
-        "                                                     (kg)         (qtl)"
+        "                                                    per(kg)      per(qtl)"
       );
       doc.text(
         "-----------------------------------------------------------------------------------------"
@@ -145,7 +145,7 @@ export async function POST(req: Request) {
         doc.text(line, {
           align: "left",
         });
-        doc.moveDown(0.35)
+        doc.moveDown(0.35);
 
         totalQty += item.qty;
         totalGWeight += item.gWeight;
@@ -157,40 +157,80 @@ export async function POST(req: Request) {
         "-----------------------------------------------------------------------------------------"
       );
       // AMOUNT AND GST
-      doc.text(`                                                         Sub Total : ${data.subTotal?.toFixed(2)}`, {
-        align: "center",
-      });
-      doc.moveDown(0.15)
-      
+      doc.text(
+        `                                                         Sub Total : ${data.subTotal?.toFixed(
+          2
+        )}`,
+        {
+          align: "center",
+        }
+      );
+      doc.moveDown(0.15);
+
       // GST Breakdown
-      if (data.gstBreakdown ) {
+      if (data.gstBreakdown) {
         Object.entries(data.gstBreakdown).forEach(
           ([rate, value]: [string, any]) => {
-            doc.text(`                                                        GST @ ${rate}% : ${Number(value).toFixed(2)}`, {
-              align: "center",
-            });
+            if (data.state === "DELHI") {
+              const half = Number(value) / 2;
+
+              doc.text(
+                `                                                        CGST @ ${(
+                  Number(rate) / 2
+                ).toFixed(1)}% : ${half.toFixed(2)}`,
+                {
+                  align: "center",
+                }
+              );
+              doc.text(
+                `                                                        SGST @ ${(
+                  Number(rate) / 2
+                ).toFixed(1)}% : ${half.toFixed(2)}`,
+                {
+                  align: "center",
+                }
+              );
+            } else {
+              doc.text(
+                `                                                        GST @ ${rate}% : ${Number(
+                  value
+                ).toFixed(2)}`,
+                {
+                  align: "center",
+                }
+              );
+            }
           }
         );
       }
-      
-      
-      doc.moveDown(0.15)
+
+      doc.moveDown(0.15);
       // Total GST
-      doc.text(`                                                        Total GST : ${data.totalGst?.toFixed(2)}`, {
-        align: "center",
-      });
-      
-      doc.moveDown(0.15)
+      doc.text(
+        `                                                        Total GST : ${data.totalGst?.toFixed(
+          2
+        )}`,
+        {
+          align: "center",
+        }
+      );
+
+      doc.moveDown(0.15);
       // Grand Total
-      doc.text(`                                                       Grand Total : ${data.totalAmount.toFixed(2)}`, {
-        align: "center",
-      });
-      doc.moveDown(0.15)
-      
+      doc.text(
+        `                                                       Grand Total : ${data.totalAmount.toFixed(
+          2
+        )}`,
+        {
+          align: "center",
+        }
+      );
+      doc.moveDown(0.15);
+
       doc.text(
         "-----------------------------------------------------------------------------------------"
       );
-      
+
       //AMPUNT IN WORD
       doc.text(numberToWords(data.totalAmount));
       doc.text(
@@ -209,7 +249,7 @@ export async function POST(req: Request) {
         "E.& O.E.                                                 for LAKHOTIA AGRO FOODS INDIA"
       );
       doc.moveDown(2);
-      doc.text(`Wegan no./Truck No.:   ${data.vehicleNumber}`);
+      doc.text(`Vehicle Number   :   ${data.vehicleNumber}`);
       doc.moveDown(5);
       doc.text(
         "All Subject To Delhi Jurisdiction                                Authorised Signatory"

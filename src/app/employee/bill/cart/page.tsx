@@ -80,8 +80,6 @@ export default function CartPage() {
         toast("Error occured");
       }
 
-      console.log(res)
-
       const blob = await res.blob();
       const url = window.URL.createObjectURL(blob);
 

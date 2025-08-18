@@ -37,7 +37,7 @@ export const AuthProvider = ({
           // Auto-redirect if already logged in
           if (userData) {
             // window.location.href = userData.role === 'ADMIN' ? '/admin' : '/employee';
-            router.push(userData.role === 'ADMIN' ? '/ ' : '/employee');
+            router.push(userData.role === 'ADMIN' ? '/admin ' : '/employee');
           }
         }
       } catch (error) {
@@ -74,7 +74,7 @@ export const AuthProvider = ({
         router.replace("/admin");
       } else if (data.user.role === "EMPLOYEE") {
         // console.log("going to employee page");
-        router.replace("/employee");
+        router.replace("/employee/bill");
       }
     } else {
       throw new Error(data.message || "Login failed");

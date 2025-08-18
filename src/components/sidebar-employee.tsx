@@ -22,28 +22,10 @@ export default function Sidebar({ onLinkClick }: SidebarProps) {
 
   const navItems = [
     {
-      href: '/admin',
+      href: '/employee/bill',
       label: 'Dashboard',
       icon: LayoutDashboard,
       exact: true
-    },
-    {
-      href: '/admin/catalog',
-      label: 'Product Catalog',
-      icon: Settings,
-      exact: false
-    },
-    {
-      href: '/admin/bill',
-      label: 'Billing',
-      icon: Receipt,
-      exact: false
-    },
-    {
-      href: '/admin/employee',
-      label: 'Add Employee',
-      icon: Plus,
-      exact: false
     }
   ]
 

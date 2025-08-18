@@ -77,8 +77,6 @@ export default function AdminPage() {
 
       })
 
-      console.log("80",res)
-
       if(!res.ok) {
         throw new Error("Failed to generate bill")
       }

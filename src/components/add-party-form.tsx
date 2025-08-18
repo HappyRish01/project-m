@@ -111,7 +111,7 @@ export function AddPartyForm({ onSubmit, onCancel }: AddPartyFormProps) {
 
           <div className="flex gap-2 pt-4">
             <Button type="submit" className="flex-1">
-              Add Party
+              Add Employee
             </Button>
             {onCancel && (
               <Button type="button" variant="outline" onClick={onCancel}>

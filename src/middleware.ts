@@ -11,7 +11,7 @@ export async function middleware(request: NextRequest) {
 
   const isApiRoute = pathname.startsWith("/api");
   const isAdminRoute = pathname.startsWith("/admin");
-  const isEmployeeRoute = pathname.startsWith("/employee");
+  const isEmployeeRoute = pathname.startsWith("/employee"); 
 
   
 
