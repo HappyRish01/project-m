@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 // import { getUserFromTokenWithoutGivenToken } from '../lib/server/auth';
 
 interface AuthContextType {
@@ -96,8 +97,9 @@ export const AuthProvider = ({
     });
     const data = await response.json();
     if (response.ok) {
-      setUser(data);
-      router.push("/admin");
+      // setUser(data);
+      // router.push("/admin");
+      toast("User added successfully")
     } else {
       throw new Error(data.message || "Registration failed");
     }

@@ -44,7 +44,7 @@ export default function LoginForm() {
                      flex flex-col justify-center transition-all duration-300"
         >
           <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-center text-black mb-6">
-            Login
+            Register
           </h2>
 
           {error && (
@@ -59,7 +59,7 @@ export default function LoginForm() {
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
               <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1">
-                username
+                Name
               </label>
               <motion.input
                 id="username"
