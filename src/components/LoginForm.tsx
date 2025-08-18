@@ -1,145 +1,107 @@
 'use client';
 
-import { useState } from 'react';
+import { useState , useEffect} from 'react';
 import { useAuth } from './AuthProvider';
-// import { motion } from 'framer-motion';
+import { motion } from 'framer-motion';
+
 
 export default function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  // const [isMounted, setIsMounted] = useState(false);
-  // const [isLoading, setIsLoading] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
 
-  // useEffect(() => {
-  //   setIsMounted(true);
-  // }, []);
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    // setIsLoading(true);
+    setIsLoading(true);
     try {
       await login(email, password);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Login failed');
     }
-    // setIsLoading(false);
+    setIsLoading(false);
   };
 
-//   return (
-//     <div className="min-h-screen w-full flex items-center justify-center bg-white p-4">
-//       {isMounted && (
-//         <motion.div
-//           initial={{ opacity: 0, y: 40 }}
-//           animate={{ opacity: 1, y: 0 }}
-//           transition={{ duration: 0.7, ease: 'easeOut' }}
-//           className="w-full sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl 
-//                      bg-white border border-gray-300 shadow-[0_10px_40px_rgba(0,0,0,0.3)]
-//                      rounded-2xl px-6 sm:px-8 md:px-10 
-//                      py-14 sm:py-16 min-h-[600px] 
-//                      flex flex-col justify-center transition-all duration-300"
-//         >
-//           <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-center text-black mb-6">
-//             Member Login
-//           </h2>
+  return (
+    <div className="min-h-screen w-full flex items-center justify-center bg-white p-4">
+      {isMounted && (
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, ease: 'easeOut' }}
+          className="w-full sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl 
+                     bg-white border border-gray-300 shadow-[0_10px_40px_rgba(0,0,0,0.3)]
+                     rounded-2xl px-6 sm:px-8 md:px-10 
+                     py-14 sm:py-16 min-h-[600px] 
+                     flex flex-col justify-center transition-all duration-300"
+        >
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-center text-black mb-6">
+            Login
+          </h2>
 
-//           {error && (
-//             <motion.p
-//               animate={{ x: [0, -5, 5, -5, 0] }}
-//               className="text-center text-red-500 text-sm mb-4"
-//             >
-//               {error}
-//             </motion.p>
-//           )}
+          {error && (
+            <motion.p
+              animate={{ x: [0, -5, 5, -5, 0] }}
+              className="text-center text-red-500 text-sm mb-4"
+            >
+              {error}
+            </motion.p>
+          )}
 
-//           <form onSubmit={handleSubmit} className="space-y-5">
-//             <div>
-//               <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-//                 Email
-//               </label>
-//               <motion.input
-//                 id="email"
-//                 type="email"
-//                 value={email}
-//                 onChange={e => setEmail(e.target.value)}
-//                 required
-//                 whileFocus={{ scale: 1.01 }}
-//                 className="w-full px-4 py-3 rounded-md border border-gray-300 text-sm placeholder-gray-400 bg-gray-50 text-black focus:outline-none focus:ring-2 focus:ring-black"
-//                 placeholder="Enter your email"
-//               />
-//             </div>
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                Email
+              </label>
+              <motion.input
+                id="email"
+                type="email"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                required
+                whileFocus={{ scale: 1.01 }}
+                className="w-full px-4 py-3 rounded-md border border-gray-300 text-sm placeholder-gray-400 bg-gray-50 text-black focus:outline-none focus:ring-2 focus:ring-black"
+                placeholder="Enter your email"
+              />
+            </div>
 
-//             <div>
-//               <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-//                 Password
-//               </label>
-//               <motion.input
-//                 id="password"
-//                 type="password"
-//                 value={password}
-//                 onChange={e => setPassword(e.target.value)}
-//                 required
-//                 whileFocus={{ scale: 1.01 }}
-//                 className="w-full px-4 py-3 rounded-md border border-gray-300 text-sm placeholder-gray-400 bg-gray-50 text-black focus:outline-none focus:ring-2 focus:ring-black"
-//                 placeholder="Enter your password"
-//               />
-//             </div>
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+                Password
+              </label>
+              <motion.input
+                id="password"
+                type="password"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                required
+                whileFocus={{ scale: 1.01 }}
+                className="w-full px-4 py-3 rounded-md border border-gray-300 text-sm placeholder-gray-400 bg-gray-50 text-black focus:outline-none focus:ring-2 focus:ring-black"
+                placeholder="Enter your password"
+              />
+            </div>
 
-//             <motion.button
-//               whileHover={{ scale: 1.03 }}
-//               whileTap={{ scale: 0.97 }}
-//               disabled={isLoading}
-//               type="submit"
-//               className="w-full py-3 text-sm rounded-md bg-black text-white font-semibold hover:bg-gray-900 transition disabled:opacity-60"
-//             >
-//               {isLoading ? 'Loading...' : 'Login'}
-//             </motion.button>
-//           </form>
+            <motion.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              disabled={isLoading}
+              type="submit"
+              className="w-full py-3 text-sm rounded-md bg-black text-white font-semibold hover:bg-gray-900 transition disabled:opacity-60"
+            >
+              {isLoading ? 'Loading...' : 'Login'}
+            </motion.button>
+          </form>
 
       
-//         </motion.div>
-//       )}
-//     </div>
-//   );
-
-
-
-
-
-  return (
-    <div className="max-w-md mx-auto mt-10">
-      <h1 className="text-2xl font-bold mb-4">Register</h1>
-      {error && <p className="text-red-500 mb-4">{error}</p>}
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block mb-1">Email:</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            className="w-full px-3 py-2 border rounded"
-          />
-        </div>
-        <div>
-          <label className="block mb-1">Password:</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            className="w-full px-3 py-2 border rounded"
-          />
-        </div>
-        <button
-          type="submit"
-          className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
-        >
-          Register
-        </button>
-      </form>
-    </div>
-  );
+        </motion.div>
+      )}
+    </div>
+  )
 }
