@@ -6,15 +6,15 @@ import { cookies } from 'next/headers';
 
 export async function POST(request: Request) {
   let { email, password } = await request.json();
-  email = email.toLowerCase();
-
+  
   if (!email || !password) {
     return NextResponse.json(
       { message: 'Email and password are required' },
       { status: 400 }
     );
   }
-
+  
+  email = email.toLowerCase();
   try {
     const user = await prisma.user.findUnique({ where: { email } });
     if (!user) {
