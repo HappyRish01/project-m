@@ -56,7 +56,7 @@ export default function BillPage() {
 
           {/* Cart Button */}
           {/* <Link href="/admin/bill/cart"> */}
-            <Button className="relative flex items-center gap-2" onClick={() => router.push("/admin/bill/cart")}>
+            <Button className="relative flex items-center gap-2" onClick={() => router.push("/employee/bill/cart")}>
               <ShoppingCart className="h-4 w-4" />
               <span className="hidden sm:inline">View Cart</span>
               <span className="sm:hidden">Cart</span>
