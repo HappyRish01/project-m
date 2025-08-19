@@ -4,7 +4,8 @@ import { hashPassword } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 
 export async function POST(request: Request) {
-  const { email, password, name } = await request.json();
+  let { email, password, name } = await request.json();
+  email = email.toLowerCase();
 
   if (!email || !password) {
     return NextResponse.json(

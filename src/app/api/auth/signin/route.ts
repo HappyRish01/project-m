@@ -5,7 +5,8 @@ import prisma from '@/lib/prisma';
 import { cookies } from 'next/headers';
 
 export async function POST(request: Request) {
-  const { email, password } = await request.json();
+  let { email, password } = await request.json();
+  email = email.toLowerCase();
 
   if (!email || !password) {
     return NextResponse.json(
