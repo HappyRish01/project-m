@@ -16,7 +16,6 @@ export async function setTokenCookie(token: string): Promise<void> {
     maxAge:  60 * 60 * 24 * 7,
     path: '/',
   });
-  console.log("Token set in cookie:", token);
 }
 
 export async function getUserFromTokenWithoutGivenToken(): Promise<any> {

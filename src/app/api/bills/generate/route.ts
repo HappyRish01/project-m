@@ -126,7 +126,6 @@ export async function POST(req: Request) {
       let totalGWeight = 0;
       let totalAmount = 0;
 
-      console.log(data);
 
       data.items.forEach((item: any) => {
         const truncatedName = truncateText(item.name, 15);

@@ -63,7 +63,6 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   const body = await req.json();
   const { items, billingDetails, subTotal, gstBreakdown, totalGst , totalAmount } = body;
-  console.log('66', subTotal, gstBreakdown, totalGst , totalAmount)
 
   const productIds = items.map((item: any) => item.id);
 

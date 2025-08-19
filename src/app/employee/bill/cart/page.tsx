@@ -78,18 +78,34 @@ export default function CartPage() {
       });
       if (!res.ok) {
         toast("Error occured");
+        return 
       }
 
-      const blob = await res.blob();
-      const url = window.URL.createObjectURL(blob);
+      const data = await res.json();
+      const billId = data.bill.id;
+      const billName = data.bill.name;
 
-      const a = document.createElement("a");
-      a.href = url;
-      // Major fix needed bill id
-      a.download = `bill-ayush.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
+    toast(`Bill created for ${billName}`);
+
+       const pdfRes = await fetch("/api/bills/generate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ billId }), 
+    });
+
+    if (!pdfRes.ok) {
+      toast("Error generating PDF");
+      return;
+    }
+    const blob = await pdfRes.blob();
+    const url = window.URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `bill-${billName}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
     } catch (error: any) {
       toast("Error occured", error.message);
     }

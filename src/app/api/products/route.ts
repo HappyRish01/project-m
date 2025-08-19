@@ -23,7 +23,6 @@ export async function POST(request: Request) {
   try {
     const productData = await request.json();
 
-    console.log("Creating product:", productData);
 
     // Validate required fields
         const validated = productSchema.parse(productData)

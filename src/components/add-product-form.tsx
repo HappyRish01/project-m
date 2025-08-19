@@ -42,7 +42,6 @@ export function AddProductForm({ product, onSubmit, onCancel }: AddProductFormPr
   // Product jo wha se aa rha hai
   useMemo(() => {
     if (product) {
-      console.log("inside useEffect with product:", product)
       setFormData({
         
         ...product,
@@ -95,7 +94,6 @@ export function AddProductForm({ product, onSubmit, onCancel }: AddProductFormPr
     }))
   }
     useEffect(() => {
-    console.log("formData updated:", formData);
   }, [formData.unit]);
 
   return (
