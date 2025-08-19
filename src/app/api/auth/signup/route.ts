@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { hashPassword, createToken } from '@/lib/auth';
-import { setTokenCookie } from '@/lib/server/auth';
+import { hashPassword } from '@/lib/auth';
+// import { setTokenCookie } from '@/lib/server/auth';
 import prisma from '@/lib/prisma';
 
 export async function POST(request: Request) {
@@ -23,7 +23,7 @@ export async function POST(request: Request) {
     }
 
     const hashedPassword = await hashPassword(password);
-    const user = await prisma.user.create({
+    await prisma.user.create({
       data: {
         email,
         password: hashedPassword,
@@ -32,14 +32,11 @@ export async function POST(request: Request) {
       },
     });
 
-    const token = createToken(user.id, user.role);
-    setTokenCookie(token);
+    // const token = createToken(user.id, user.role);
+    // setTokenCookie(token);
 
     return NextResponse.json({
-      id: user.id,
-      // email: user.email,
-      name: user.name,
-      role: user.role,
+      success: "User created succesfully"
     });
   } catch (error) {
     console.error('Signup error:', error);

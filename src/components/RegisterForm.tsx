@@ -24,6 +24,10 @@ export default function LoginForm() {
     setIsLoading(true);
     try {
       await register(email,password, username);
+      
+      setEmail("");
+  setUsername("");
+  setPassword("");
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Login failed');
     }
@@ -44,7 +48,7 @@ export default function LoginForm() {
                      flex flex-col justify-center transition-all duration-300"
         >
           <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-center text-black mb-6">
-            Register
+            Register Employee
           </h2>
 
           {error && (
@@ -111,7 +115,7 @@ export default function LoginForm() {
               type="submit"
               className="w-full py-3 text-sm rounded-md bg-black text-white font-semibold hover:bg-gray-900 transition disabled:opacity-60"
             >
-              {isLoading ? 'Loading...' : 'Login'}
+              {isLoading ? 'Loading...' : 'Create Employee'}
             </motion.button>
           </form>
 
