@@ -19,4 +19,6 @@ export interface CartItem {
   quantity: number
   hsnCode: string
   gst: number
+  kgpunit: number
+  unit: string
 }

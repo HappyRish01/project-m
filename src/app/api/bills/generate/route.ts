@@ -115,7 +115,7 @@ export async function POST(req: Request) {
         "Item              Hsn Code       Qty.    Unit       Weight        Rate        Amount"
       );
       doc.text(
-        "                                                    per(kg)      per(qtl)"
+        "                                                    in(kg)      per(qtl)"
       );
       doc.text(
         "-----------------------------------------------------------------------------------------"
@@ -215,6 +215,9 @@ export async function POST(req: Request) {
       );
 
       doc.moveDown(0.15);
+      doc.text(
+        "-----------------------------------------------------------------------------------------"
+      );
       // Grand Total
       doc.text(
         `                                                       Grand Total : ${data.totalAmount.toFixed(

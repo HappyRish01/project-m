@@ -21,6 +21,7 @@ export function ProductCard({ product }: ProductCardProps) {
   // console.log("Cart Item:", cartItem?.quantity)
 
   const handleAddToCart = () => {
+    // console.log("24", product)
     addItem(product)
   }
 
@@ -70,8 +71,12 @@ export function ProductCard({ product }: ProductCardProps) {
               <span>{product.gst}%</span>
             </div>
             <div className="flex justify-between">
-              <span>Price:</span>
+              <span>Price per (qtl):</span>
               <span>{product.price}</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Units:</span>
+              <span>{`${product.kgpunit} kg in 1 ${product.unit}`}</span>
             </div>
           </div>
 

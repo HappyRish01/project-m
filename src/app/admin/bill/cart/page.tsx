@@ -102,7 +102,7 @@ export default function CartPage() {
 
     const a = document.createElement("a");
     a.href = url;
-    a.download = `bill-${billName}.pdf`;
+    a.download = `bill-${billId}.pdf`;
     document.body.appendChild(a);
     a.click();
     a.remove();

@@ -16,7 +16,7 @@ export default function BillPage() {
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState("")
-  const { getTotalItems , getTotalAmount } = useCart()
+  const { getTotalItems  } = useCart()
   
   const router = useRouter()
   const totalCartItems = getTotalItems()

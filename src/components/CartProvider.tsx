@@ -53,6 +53,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
             quantity: 1,
             hsnCode: product.hsnCode,
             gst: product.gst,
+            kgpunit: product.kgpunit,
+            unit: product.unit
           },
         ]
       }
@@ -86,14 +88,15 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const getSubtotal = () => {
     // if (items.length === 0) return 0
-    return items.reduce((total, item) => total + item.price * item.quantity, 0)
+    console.log("item subtotal" , items)
+    return items.reduce((total, item) => total + ((item.price * item.quantity)/100) * item.kgpunit , 0)
   }
 
   const getGSTBreakdown = () => {
     const gstBreakdown: { [key: number]: number } = {}
 
     items.forEach((item) => {
-      const itemSubtotal = item.price * item.quantity
+      const itemSubtotal = ((item.price * item.quantity ) / 100 ) * item.kgpunit
       const gstAmount = (itemSubtotal * item.gst) / 100
 
       if (gstBreakdown[item.gst]) {
