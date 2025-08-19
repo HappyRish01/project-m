@@ -38,7 +38,7 @@ export const AuthProvider = ({
           // Auto-redirect if already logged in
           if (userData) {
             // window.location.href = userData.role === 'ADMIN' ? '/admin' : '/employee';
-            router.push(userData.role === 'ADMIN' ? '/admin ' : '/employee');
+            router.push(userData.role === 'ADMIN' ? '/admin' : '/employee/bill');
           }
         }
       } catch (error) {
@@ -47,7 +47,7 @@ export const AuthProvider = ({
         setLoading(false);
       }
     }else {
-      router.push(user.role === 'ADMIN' ? '/admin' : '/employee');
+      router.push(user.role === 'ADMIN' ? '/admin' : '/employee/bill');
     }
     
       // const user = await getUserFromTokenWithoutGivenToken();

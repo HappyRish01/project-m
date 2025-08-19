@@ -2,6 +2,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Shield, Lock } from "lucide-react"
+
 export default function UnauthorisedPage() {
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">

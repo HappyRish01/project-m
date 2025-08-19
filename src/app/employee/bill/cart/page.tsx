@@ -105,7 +105,7 @@ export default function CartPage() {
     return (
       <div className="p-4 sm:p-6 md:p-8">
         <div className="mb-6">
-          <Link href="/admin/bill">
+          <Link href="/employee/bill">
             <Button variant="ghost" className="flex items-center gap-2">
               <ArrowLeft className="h-4 w-4" />
               Back to Products
@@ -123,7 +123,7 @@ export default function CartPage() {
           <p className="text-gray-600 mb-6">
             Add some products to create a bill
           </p>
-          <Link href="/admin/bill">
+          <Link href="/employee/bill">
             <Button>Browse Products</Button>
           </Link>
         </div>
@@ -135,7 +135,7 @@ export default function CartPage() {
     <div className="p-4 sm:p-6 md:p-8">
       {/* Header */}
       <div className="mb-6">
-        <Link href="/admin/bill">
+        <Link href="/employee/bill">
           <Button variant="ghost" className="flex items-center gap-2 mb-4">
             <ArrowLeft className="h-4 w-4" />
             Back to Products
