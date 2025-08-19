@@ -104,7 +104,7 @@ export default function BillPage() {
       {/* Fixed Cart Summary for Mobile */}
       {totalCartItems > 0 && (
         <div className="fixed bottom-4 left-4 right-4 sm:hidden z-50">
-          <Link href="/admin/bill/cart">
+          <Link href="/employee/bill/cart">
             <Button className="w-full flex items-center justify-center gap-2 shadow-lg">
               <ShoppingCart className="h-4 w-4" />
               View Cart ({totalCartItems} items)
