@@ -37,13 +37,17 @@ export default function CatalogPage() {
   },[]);
 
   const handleAddProduct = async (newProduct: Product) => {
+ 
     // api called here 
     const res = await fetch("/api/products", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(newProduct),
+      body: JSON.stringify({
+        ...newProduct,
+        hsnCode: newProduct.hsnCode.trim() 
+      })
     })
     if (!res.ok) {
       const errorData = await res.json();

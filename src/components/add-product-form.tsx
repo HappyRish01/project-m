@@ -45,15 +45,8 @@ export function AddProductForm({ product, onSubmit, onCancel }: AddProductFormPr
       setFormData({
         
         ...product,
-        hsnCode: product.hsnCode.trim(),
         unit: product.unit?.toString() ?? "",
-        
-        
-        // unit: product.unit && product.unit
-        // unit:
-        //   unitOptions.find((u) => u.toLowerCase() === product.unit?.toLowerCase())?.toString() ??
-        //   unitOptions[0].toString(), // Ensure unit is a string
-        // unit: unit.find(u => u.toLowerCase() === product.unit?.toLowerCase()) || unit[0]
+
       }
 
     )
@@ -95,8 +88,7 @@ export function AddProductForm({ product, onSubmit, onCancel }: AddProductFormPr
       [field]: value
     }))
   }
-    useEffect(() => {
-  }, [formData.unit]);
+
 
   return (
     <Card className="sticky top-4">
