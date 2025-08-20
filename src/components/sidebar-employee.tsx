@@ -40,7 +40,7 @@ export default function Sidebar({ onLinkClick }: SidebarProps) {
     <div className="relative flex flex-col h-full bg-gray-50 border-r border-gray-200 p-4">
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
-        <h2 className="text-2xl font-bold text-gray-900">Admin Panel</h2>
+        <h2 className="text-2xl font-bold text-gray-900">Employee Panel</h2>
         {isMobile && (
           <Button variant="ghost" size="icon" onClick={onLinkClick} className="-mr-2">
             <X className="h-6 w-6" />
@@ -49,7 +49,7 @@ export default function Sidebar({ onLinkClick }: SidebarProps) {
         )}
       </div>
       <Badge variant="secondary" className="text-xs mb-6 self-start">
-        Management System
+        {/* Management System */}
       </Badge>
 
       {/* Navigation Items */}

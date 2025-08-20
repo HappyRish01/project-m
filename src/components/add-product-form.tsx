@@ -45,7 +45,9 @@ export function AddProductForm({ product, onSubmit, onCancel }: AddProductFormPr
       setFormData({
         
         ...product,
+        hsnCode: product.hsnCode.trim(),
         unit: product.unit?.toString() ?? "",
+        
         
         // unit: product.unit && product.unit
         // unit:
