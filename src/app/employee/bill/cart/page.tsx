@@ -35,8 +35,11 @@ export default function CartPage() {
   const subTotal = getSubtotal();
   const gstBreakdown = getGSTBreakdown();
   const totalGst = getTotalGST();
+  const [progress , setProgress] = useState(false);
 
   const handleCreateBill = async () => {
+        setProgress(true);
+
     if (items.length === 0) {
       alert("Please add items to cart first");
       return;
@@ -46,20 +49,6 @@ export default function CartPage() {
       alert("Please fill in required billing details");
       return;
     }
-
-    // Here you would typically send the data to your backend
-    // const billData = {
-    //   items,
-    //   billingDetails,
-    //   totalAmount,
-    //   subTotal,
-    //   gstBreakdown,
-    //   totalGst,
-    // };
-
-    // console.log("Creating bill with data:", billData);
-
-    // Simulate API call
     try {
       const res = await fetch("/api/bills", {
         method: "POST",
@@ -108,6 +97,8 @@ export default function CartPage() {
     a.remove();
     } catch (error: any) {
       toast("Error occured", error.message);
+    }finally{
+      setProgress(false);
     }
 
     // Clear cart after successful bill creation
@@ -250,12 +241,17 @@ export default function CartPage() {
           </Card>
 
           {/* Create Bill Button */}
-          <Button
+         <Button
             onClick={handleCreateBill}
             className="w-full h-12 text-lg"
             size="lg"
+            disabled={progress}
           >
-            Create Bill - ₹{totalAmount.toFixed(2)}
+            {
+              progress
+        ? "Processing..."
+        : `Create Bill - ₹${totalAmount.toFixed(2)}`
+            }
           </Button>
         </div>
       </div>
