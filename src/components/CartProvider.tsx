@@ -88,7 +88,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const getSubtotal = () => {
     // if (items.length === 0) return 0
-    console.log("item subtotal" , items)
+    // console.log("item subtotal" , items)
     return items.reduce((total, item) => total + ((item.price * item.quantity)/100) * item.kgpunit , 0)
   }
 

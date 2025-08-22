@@ -32,7 +32,7 @@ export async function POST(request: Request) {
 
     // Validate required fields
     const validated = productSchema.parse(productData)
-    console.log(validated)
+    // console.log(validated)
 
     const newProduct = await prisma.product.create({
       data: validated,

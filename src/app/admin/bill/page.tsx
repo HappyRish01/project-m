@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { ProductGrid } from "@/components/product-grid"
+import { AdminProductGrid } from "@/components/admin-product-grid"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { ShoppingCart, Search } from "lucide-react"
@@ -98,7 +98,7 @@ export default function BillPage() {
           <p className="mt-4 text-gray-500">Loading products...</p>
         </div>
       ) : (
-        <ProductGrid products={filteredProducts} />
+        <AdminProductGrid products={filteredProducts} />
       )}
 
       {/* Fixed Cart Summary for Mobile */}
