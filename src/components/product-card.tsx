@@ -55,7 +55,7 @@ export function ProductCard({ product }: ProductCardProps) {
         {/* Product Info */}
         <div className="flex-1 space-y-2">
           <div className="flex items-start justify-center gap-2">
-            <h3 className="font-semibold text-gray-900 text-base leading-snug line-clamp-2">{product.name}</h3>
+            <h3 className="font-bold text-gray-900 text-base leading-snug line-clamp-2">{product.name}</h3>
             
           </div>
 
