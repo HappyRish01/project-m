@@ -73,7 +73,7 @@ export default function LoginForm() {
                 required
                 whileFocus={{ scale: 1.01 }}
                 className="w-full px-4 py-3 rounded-md border border-gray-300 text-sm placeholder-gray-400 bg-gray-50 text-black focus:outline-none focus:ring-2 focus:ring-black"
-                placeholder="Enter your name"
+                placeholder="Enter your Name"
               />
             </div>
             <div>

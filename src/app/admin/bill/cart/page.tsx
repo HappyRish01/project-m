@@ -41,11 +41,13 @@ export default function CartPage() {
     setProgress(true);
     if (items.length === 0) {
       alert("Please add items to cart first");
+      setProgress(false);
       return;
     }
-
+    
     if (!billingDetails.customerName || !billingDetails.address) {
       alert("Please fill in required billing details");
+      setProgress(false);
       return;
     }
 

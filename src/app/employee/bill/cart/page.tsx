@@ -39,14 +39,16 @@ export default function CartPage() {
 
   const handleCreateBill = async () => {
         setProgress(true);
-
-    if (items.length === 0) {
-      alert("Please add items to cart first");
-      return;
-    }
-
-    if (!billingDetails.customerName || !billingDetails.address) {
-      alert("Please fill in required billing details");
+        
+        if (items.length === 0) {
+          alert("Please add items to cart first");
+          setProgress(false);
+          return;
+        }
+        
+        if (!billingDetails.customerName || !billingDetails.address) {
+          alert("Please fill in required billing details");
+          setProgress(false);
       return;
     }
     try {
