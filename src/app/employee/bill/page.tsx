@@ -8,14 +8,19 @@ import { ShoppingCart, Search } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import type { Product } from "@/types/product"
 // import { getProducts } from "@/app/actions/product-actions"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useCart } from "@/components/CartProvider"
 import Link from "next/link"
+import { productTypes } from "@/lib/config/productOptions"
 import { useRouter } from "next/navigation"
 
 export default function BillPage() {
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState("")
+
+  const [productType , setProductType] = useState("All item")
+  
   const { getTotalItems } = useCart()
   
   const router = useRouter()
@@ -32,6 +37,30 @@ export default function BillPage() {
     }
     fetchProducts()
   }, [])
+
+  const fetchProductsWithType = async () => {
+    if(productType === "All item") {
+      const fetchProducts = async () => {
+      setLoading(true)
+      const fetchedProducts = await fetch("/api/products").then((res) => res.json())
+      setProducts(fetchedProducts)
+      setLoading(false)
+    }
+    fetchProducts()
+
+    
+      return
+    }
+    setLoading(true)
+    try {
+      const fetchedProducts = await fetch(`/api/products?type=${productType}`).then((res) => res.json())
+      setProducts(fetchedProducts)
+    } catch (error) {
+      console.error("Error fetching products by type:", error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   // Filter products based on search query
   const filteredProducts = products.filter(
@@ -78,18 +107,43 @@ export default function BillPage() {
       </div>
 
       {/* Search Bar */}
-      <div className="mb-6">
-        <div className="relative max-w-md">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-          <Input
-            type="text"
-            placeholder="Search products..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10"
-          />
-        </div>
-      </div>
+      {/* Search + Filter */}
+<div className="mb-6 flex flex-col sm:flex-row gap-3">
+  {/* Input */}
+  <div className="relative flex-[0.6]">
+    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+    <Input
+      type="text"
+      placeholder={`Search products...`}
+      value={searchQuery}
+      onChange={(e) => setSearchQuery(e.target.value)}
+      className="pl-10 h-10 w-full"
+    />
+  </div>
+
+  {/* Select Type */}
+  <Select value={productType} onValueChange={setProductType}>
+    <SelectTrigger className="w-full sm:w-[140px] h-10">
+      {/* <SelectValue placeholder="Search by" /> */}
+                        <SelectValue placeholder="Select" />
+
+    </SelectTrigger>
+    <SelectContent>
+      <SelectItem value="All item" key={"All item"}>All item</SelectItem>
+      {productTypes.map((type) => (
+        <SelectItem key={type} value={type}>
+          {type}
+        </SelectItem>
+      ))}
+    </SelectContent>
+  </Select>
+
+  {/* Search Button */}
+  <Button className="h-10 w-full sm:w-auto" onClick={fetchProductsWithType}>
+    Search
+  </Button>
+</div>
+
 
       {/* Products Grid */}
       {loading ? (

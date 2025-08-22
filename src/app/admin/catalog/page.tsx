@@ -82,11 +82,13 @@ export default function CatalogPage() {
       toast("Error updating product: " + errorData.message);
       return;
     }
+
     const updatedProductData = await res.json();
 
     setProducts(products.map(p => 
       p.id === updatedProductData.id ? updatedProductData : p
     ))
+    toast("Product updated successfully!");
     setProductToEdit(null)
     setShowEditModal(false)
   }

@@ -41,6 +41,7 @@ model Product {
   hsnCode   String   @unique
   kgpunit   Float
   gst       Int
+  type     String?
   unit      Unit
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

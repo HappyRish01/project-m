@@ -42,7 +42,7 @@ export function ProductCard({ product }: ProductCardProps) {
   }
 
   return (
-    <Card className="hover:shadow-lg transition-shadow duration-200 h-full flex flex-col">
+    <Card className="hover:shadow-lg transition-shadow duration-200 aspect-square max-w-[180px] mx-auto  flex flex-col">
       <CardContent className="p-4 flex flex-col h-full">
         {/* Product Image Placeholder */}
         {/* <div className="w-full h-32 sm:h-40 bg-gray-100 rounded-lg mb-3 flex items-center justify-center">
@@ -54,36 +54,12 @@ export function ProductCard({ product }: ProductCardProps) {
 
         {/* Product Info */}
         <div className="flex-1 space-y-2">
-          <div className="flex items-start justify-between gap-2">
-            <h3 className="font-medium text-gray-900 text-sm leading-tight line-clamp-2">{product.name}</h3>
-            <Badge variant="secondary" className="text-xs flex-shrink-0">
-              {/* {product.category} */}
-            </Badge>
+          <div className="flex items-start justify-center gap-2">
+            <h3 className="font-semibold text-gray-900 text-base leading-snug line-clamp-2">{product.name}</h3>
+            
           </div>
 
-          <div className="space-y-1 text-xs text-gray-600">
-            <div className="flex justify-between">
-              <span>HSN:</span>
-              <span>{product.hsnCode}</span>
-            </div>
-            <div className="flex justify-between">
-              <span>GST:</span>
-              <span>{product.gst}%</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Price per (qtl):</span>
-              <span>{product.price}</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Units:</span>
-              <span>{`${product.kgpunit} kg in 1 ${product.unit}`}</span>
-            </div>
-          </div>
-
-          <div className="pt-2">
-            <div className="text-lg font-bold text-gray-900">₹{product.price}</div>
-          </div>
-        </div>
+        </div> 
 
         {/* Add to Cart / Quantity Controls */}
         <div className="mt-4">

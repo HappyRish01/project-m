@@ -3,9 +3,15 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { productSchema } from "@/lib/validations/product";
 
-export async function GET() {
+export async function GET(request: Request) {
+  const {searchParams} = new URL(request.url);
+  const type = searchParams.get("type");
+  
   try {
     const products = await prisma.product.findMany({
+      where: {
+        type : type ? type :  undefined, // Filter by type if provided
+      },
       orderBy: { createdAt: "asc" },
     });
 
@@ -25,7 +31,8 @@ export async function POST(request: Request) {
 
 
     // Validate required fields
-        const validated = productSchema.parse(productData)
+    const validated = productSchema.parse(productData)
+    console.log(validated)
 
     const newProduct = await prisma.product.create({
       data: validated,

@@ -8,7 +8,6 @@ import { Bill } from "@/types/bill";
 import { Button } from "@/components/ui/button";
 import { Loader, XCircle } from "lucide-react";
 import { toast } from "sonner";
-import { error } from "console";
 
 
 export default function AdminPage() {

@@ -6,4 +6,5 @@ export interface Product {
   kgpunit: number ;
   gst: number;
   unit: string;
+  type?: string
 }

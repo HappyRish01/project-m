@@ -1,34 +1,36 @@
-"use client"
+"use client";
 
-import { useState, useEffect, useMemo } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { useState, useEffect, useMemo } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { productTypes } from "@/lib/config/productOptions";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { Product } from "@/types/product" // Import Product type
+} from "@/components/ui/select";
+import { Product } from "@/types/product"; // Import Product type
 
 interface AddProductFormProps {
-  product?: Product | null
-  onSubmit: (product: Product) => void
-  onCancel?: () => void
+  product?: Product | null;
+  onSubmit: (product: Product) => void;
+  onCancel?: () => void;
 }
 
-const unitOptions = [
-  "Kata",
-  "Peti",
-  "Bag"
-]
+const unitOptions = ["Kata", "Peti", "Bag"];
 
-const gstRates = [0, 5, 12, 18, 28]
 
-export function AddProductForm({ product, onSubmit, onCancel }: AddProductFormProps) {
+const gstRates = [0, 5, 12, 18, 28];
+
+export function AddProductForm({
+  product,
+  onSubmit,
+  onCancel,
+}: AddProductFormProps) {
   const [formData, setFormData] = useState<Product>({
     id: "",
     name: "",
@@ -36,38 +38,36 @@ export function AddProductForm({ product, onSubmit, onCancel }: AddProductFormPr
     price: 0,
     hsnCode: "",
     gst: 18,
-    unit: "Kata"
-  })
-  
+    unit: "Kata",
+    type: "Daal",
+  });
+
   // Product jo wha se aa rha hai
   useMemo(() => {
     if (product) {
       setFormData({
-        
         ...product,
         unit: product.unit?.toString() ?? "",
-
-      }
-
-    )
-    // setFormData(product)
+      });
+      // setFormData(product)
     } else {
       setFormData({
         id: "",
         name: "",
-        price:0,
+        price: 0,
         hsnCode: "",
         kgpunit: 0,
         gst: 18,
-        unit: "Kata"
-      })
+        unit: "Kata",
+        type: "Daal",
+      });
     }
-  }, [product])
-  
+  }, [product]);
+
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    onSubmit(formData)
-    
+    e.preventDefault();
+    onSubmit(formData);
+
     if (!product) {
       // Reset form only when adding new product
       setFormData({
@@ -77,24 +77,24 @@ export function AddProductForm({ product, onSubmit, onCancel }: AddProductFormPr
         price: 0,
         hsnCode: "",
         gst: 18,
-        unit: "Kata"
-      })
+        unit: "Kata",
+        type: "Daal",
+      });
     }
-  }
+  };
 
   const handleInputChange = (field: keyof Product, value: string | number) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [field]: value
-    }))
-  }
-
+      [field]: value,
+    }));
+  };
 
   return (
     <Card className="sticky top-4">
       <CardHeader>
         <CardTitle className="text-lg">
-          {product ? 'Edit Product' : 'Add New Product'}
+          {product ? "Edit Product" : "Add New Product"}
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -104,21 +104,20 @@ export function AddProductForm({ product, onSubmit, onCancel }: AddProductFormPr
             <Input
               id="name"
               value={formData.name}
-              onChange={(e) => handleInputChange('name', e.target.value)}
+              onChange={(e) => handleInputChange("name", e.target.value)}
               placeholder="Enter product name"
               required
             />
           </div>
 
           {/* Responsive grid for price and stock */}
-          
 
           <div className="space-y-2">
             <Label htmlFor="hsnCode">HSN Code</Label>
             <Input
               id="hsnCode"
               value={formData.hsnCode}
-              onChange={(e) => handleInputChange('hsnCode', e.target.value)}
+              onChange={(e) => handleInputChange("hsnCode", e.target.value)}
               placeholder="Enter HSN code"
               required
             />
@@ -132,29 +131,40 @@ export function AddProductForm({ product, onSubmit, onCancel }: AddProductFormPr
                 step="1"
                 min="0"
                 value={formData.price === 0 ? "" : formData.price} // Handle zero value
-                onChange={(e) => handleInputChange('price', parseFloat(e.target.value))}
+                onChange={(e) =>
+                  handleInputChange("price", parseFloat(e.target.value))
+                }
                 // placeholder="0.00"
                 required
               />
             </div>
             <div className="space-y-2">
+              <Label htmlFor="unit">Product Type</Label>
+              <Select
+                value={formData.type} // Ensure value is a string
+                onValueChange={(value) => {
+                  handleInputChange("type", value);
+                }}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select Product type" />
+                </SelectTrigger>
+                <SelectContent>
+                  {productTypes.map((rate) => (
+                    <SelectItem key={rate.toString()} value={rate}>
+                      {rate}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
               <Label htmlFor="unit">Unit</Label>
-              <Select 
-                // defaultValue={formData.unit.toString()} 
-                // value={String(formData.unit.toString())} 
+              <Select
                 value={formData.unit} // Ensure value is a string
-                // value={product ? product.unit.toString() : ""}
-                onValueChange={(value) =>{
-                  // console.log("Selected value:", value)
-                  // console.log("Selected product:", product ? product.unit.toString() : "")
-                  // console.log("Selected formData 136:", formData.unit.toString())
-                  // console.log("after setting formData:", formData)
-                      // setFormData(); // update state
-                      // setFormData((prev) => ({ ...prev, unit: value }));
-                  handleInputChange('unit', value)
-                }
-              }
- 
+                onValueChange={(value) => {
+                  handleInputChange("unit", value);
+                }}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select unit" />
@@ -170,9 +180,11 @@ export function AddProductForm({ product, onSubmit, onCancel }: AddProductFormPr
             </div>
             <div className="space-y-2">
               <Label htmlFor="gst">GST Rate (%)</Label>
-              <Select 
-                value={formData.gst.toString()} 
-                onValueChange={(value) => handleInputChange('gst', Number(parseInt(value)))}
+              <Select
+                value={formData.gst.toString()}
+                onValueChange={(value) =>
+                  handleInputChange("gst", Number(parseInt(value)))
+                }
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select GST rate" />
@@ -186,15 +198,10 @@ export function AddProductForm({ product, onSubmit, onCancel }: AddProductFormPr
                 </SelectContent>
               </Select>
             </div>
-
-            
-            
           </div>
 
           {/* Responsive grid for GST and category */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            
-            
             <div className="space-y-2">
               <Label htmlFor="kgpunit">Kg's in 1 {formData.unit}</Label>
               <Input
@@ -203,7 +210,9 @@ export function AddProductForm({ product, onSubmit, onCancel }: AddProductFormPr
                 step="1"
                 min="0"
                 value={formData.kgpunit === 0 ? "" : formData.kgpunit} // Handle zero value
-                onChange={(e) => handleInputChange('kgpunit', parseFloat(e.target.value) || "")}
+                onChange={(e) =>
+                  handleInputChange("kgpunit", parseFloat(e.target.value) || "")
+                }
                 // placeholder="0.00"
                 required
               />
@@ -212,7 +221,7 @@ export function AddProductForm({ product, onSubmit, onCancel }: AddProductFormPr
 
           <div className="flex gap-2 pt-4">
             <Button type="submit" className="flex-1">
-              {product ? 'Update Product' : 'Add Product'}
+              {product ? "Update Product" : "Add Product"}
             </Button>
             {product && onCancel && (
               <Button type="button" variant="outline" onClick={onCancel}>
@@ -223,5 +232,5 @@ export function AddProductForm({ product, onSubmit, onCancel }: AddProductFormPr
         </form>
       </CardContent>
     </Card>
-  )
-}  
+  );
+}
