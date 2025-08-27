@@ -38,7 +38,7 @@ model Product {
   id        String   @id @default(cuid())
   name      String
   price     Float //ppq
-  hsnCode   String   @unique
+  hsnCode   String   
   kgpunit   Float
   gst       Int
   type     String?
