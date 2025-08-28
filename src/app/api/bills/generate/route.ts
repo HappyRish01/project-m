@@ -6,7 +6,7 @@ import path from "path";
 import { numberToWords } from "@/lib/server/numberToWord";
 function truncateText(text: string, maxLength: number): string {
   if (text.length <= maxLength) return text;
-  return text.substring(0, maxLength - 3) + "...";
+  return text.substring(0, maxLength - 2) + "..";
 }
 export async function POST(req: Request) {
   const { billId } = await req.json();
@@ -112,10 +112,10 @@ export async function POST(req: Request) {
 
       // ===== TABLE HEADER =====
       doc.text(
-        "Item              Hsn Code       Qty.    Unit       Weight        Rate        Amount"
+        "Item                    Hsn Code     Qty.    Unit     Weight      Rate        Amount"
       );
       doc.text(
-        "                                                    in(kg)      per(qtl)"
+        "                                                      in(kg)     per(qtl)"
       );
       doc.text(
         "-----------------------------------------------------------------------------------------"
@@ -128,16 +128,16 @@ export async function POST(req: Request) {
 
 
       data.items.forEach((item: any) => {
-        const truncatedName = truncateText(item.name, 15);
+        const truncatedName = truncateText(item.name, 22);
         const truncatedUnit = truncateText(item.unit, 4);
         const amount = item.price / 100;
         const weight = item.quantity * item.kgpunit;
 
-        const line = `${truncatedName.padEnd(17)} ${item.hsnCode.padEnd(
-          15
+        const line = `${truncatedName.padEnd(22)} ${item.hsnCode.padEnd(
+          14
         )} ${String(item.quantity).padEnd(6)} ${truncatedUnit.padEnd(
-          11
-        )} ${String(weight.toFixed(2)).padEnd(11)} ${String(
+          9
+        )} ${String(weight.toFixed(2)).padEnd(10)} ${String(
           item.price.toFixed(2)
         ).padEnd(11)} ${String((amount * weight).toFixed(2))}`;
 
