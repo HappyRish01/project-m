@@ -131,6 +131,7 @@ export function BillingForm({ billingDetails, setBillingDetails }: BillingFormPr
           value={billingDetails.gstinNumber}
           onChange={(e) => handleInputChange("gstinNumber", e.target.value.toUpperCase())}
           maxLength={15}
+          autoComplete="tel"
         />
       </div>
       {/* PAN Number */}
@@ -143,6 +144,7 @@ export function BillingForm({ billingDetails, setBillingDetails }: BillingFormPr
           value={billingDetails.panNumber}
           onChange={(e) => handleInputChange("panNumber", e.target.value.toUpperCase())}
           maxLength={10}
+          autoComplete="organization"
         />
       </div>
 
