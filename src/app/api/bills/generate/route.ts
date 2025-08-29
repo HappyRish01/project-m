@@ -166,8 +166,10 @@ export async function POST(req: Request) {
       );
       doc.moveDown(0.15);
 
+      console.log("169 data",data)
+
       // GST Breakdown
-      if (data.gstBreakdown) {
+      if (data.gstBreakdown && data.totalGst !== 0) {
         Object.entries(data.gstBreakdown).forEach(
           ([rate, value]: [string, any]) => {
             if (data.state === "DELHI") {
@@ -205,14 +207,17 @@ export async function POST(req: Request) {
 
       doc.moveDown(0.15);
       // Total GST
-      doc.text(
-        `                                                        Total GST : ${data.totalGst?.toFixed(
-          2
-        )}`,
-        {
-          align: "center",
-        }
-      );
+      if(data.totalGst !== 0){
+
+        doc.text(
+          `                                                        Total GST : ${data.totalGst?.toFixed(
+            2
+          )}`,
+          {
+            align: "center",
+          }
+        );
+      }
 
       doc.moveDown(0.15);
       doc.text(
