@@ -29,8 +29,8 @@ export function BillingForm({ billingDetails, setBillingDetails }: BillingFormPr
 
   return (
     <div className="space-y-4">
-      {/* Date */}
-        <div className="space-y-2">
+      {/* BillNumber */}
+      <div className="space-y-2">
         <Label htmlFor="billNumber">Enter bill number *</Label>
         <Input
           placeholder="Enter bill number"
@@ -41,6 +41,7 @@ export function BillingForm({ billingDetails, setBillingDetails }: BillingFormPr
           required
         />
       </div>
+      {/* Date */}
       <div className="space-y-2">
         <Label htmlFor="date">Date *</Label>
         <Input

@@ -29,6 +29,7 @@ export default function CartPage() {
     country: "India",
     panNumber: "",
     gstinNumber: "",
+    billNumber: ""
   });
 
   const totalAmount = getTotalAmount();
@@ -73,15 +74,16 @@ export default function CartPage() {
       }
 
       const data = await res.json();
-      const billId = data.bill.id;
+      const billId = data.bill.billNumber;
       const billName = data.bill.name;
+      const id = data.bill.id;
 
     toast(`Bill created for ${billName}`);
 
        const pdfRes = await fetch("/api/bills/generate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ billId }), 
+      body: JSON.stringify({ billId: id }), 
     });
 
     if (!pdfRes.ok) {
@@ -93,7 +95,7 @@ export default function CartPage() {
 
     const a = document.createElement("a");
     a.href = url;
-    a.download = `bill-${billName}.pdf`;
+    a.download = `bill-${billId}.pdf`;
     document.body.appendChild(a);
     a.click();
     a.remove();

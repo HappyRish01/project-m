@@ -13,7 +13,7 @@ export async function GET(req: Request) {
       const where: any = {};
       where.OR = [
         { name: { contains: searchQuery, mode: "insensitive" } },
-        { id: isNaN(Number(searchQuery)) ? undefined : Number(searchQuery) },
+        { billNumber: isNaN(Number(searchQuery)) ? undefined : String(searchQuery) },
         {
           totalAmount: isNaN(Number(searchQuery))
             ? undefined
@@ -75,6 +75,7 @@ export async function POST(req: Request) {
       data: {
         date: new Date(billingDetails.date),
         name: billingDetails.customerName,
+        billNumber: billingDetails.billNumber,
         address: billingDetails.address,
         city: billingDetails.city,
         panNumber: billingDetails.panNumber,

@@ -35,7 +35,7 @@ export async function POST(req: Request) {
             status: 200,
             headers: {
               "Content-Type": "application/pdf",
-              "Content-Disposition": `inline; filename=bill-${data.id}.pdf`,
+              "Content-Disposition": `inline; filename=bill-${data.billNumber}.pdf`,
             },
           })
         );
@@ -91,7 +91,7 @@ export async function POST(req: Request) {
       // ===== BILL INFO =====
       const billDate = format(new Date(data.date), "dd/MM/yyyy");
       doc.text(
-        `Bill No. :${data.id}                                                           Date :${billDate}`,
+        `Bill No. :${data.billNumber || ""}                                                           Date :${billDate}`,
         { align: "left" }
       );
       doc.text(
@@ -165,8 +165,6 @@ export async function POST(req: Request) {
         }
       );
       doc.moveDown(0.15);
-
-      console.log("169 data",data)
 
       // GST Breakdown
       if (data.gstBreakdown && data.totalGst !== 0) {

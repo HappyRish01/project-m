@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { CartItemList } from "@/components/card-item-list";
-import { BillingForm } from "@/components/billing-form";
+import { BillingForm } from "@/components/admin-billing-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Receipt, Trash2 } from "lucide-react";
@@ -29,6 +29,7 @@ export default function CartPage() {
     country: "India",
     panNumber: "",
     gstinNumber: "",
+    billNumber: ""
   });
   const [progress , setProgress] = useState(false);
 
@@ -45,7 +46,7 @@ export default function CartPage() {
       return;
     }
     
-    if (!billingDetails.customerName || !billingDetails.address) {
+    if (!billingDetails.customerName || !billingDetails.address || !billingDetails.billNumber) {
       alert("Please fill in required billing details");
       setProgress(false);
       return;
@@ -74,15 +75,17 @@ export default function CartPage() {
       }
 
       const data = await res.json();
-      const billId = data.bill.id;
+      const billId = data.bill.billNumber;
+      const id = data.bill.id;
       const billName = data.bill.name;
+      console.log("DATA",data)
 
     toast(`Bill created for ${billName}`);
 
-       const pdfRes = await fetch("/api/bills/generate", {
+      const pdfRes = await fetch("/api/bills/generate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ billId }), 
+      body: JSON.stringify({ billId: id }), 
     });
 
     if (!pdfRes.ok) {
@@ -107,8 +110,6 @@ export default function CartPage() {
     // Clear cart after successful bill creation
     clearCart();
 
-    // You might want to redirect to a success page or bills list
-    // router.push("/admin")
   };
 
   if (items.length === 0) {

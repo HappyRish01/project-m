@@ -10,6 +10,7 @@ export interface BillingDetails {
   vehicleNumber?: string
   stateCode?: string
   state?: string
+  billNumber?: string
 }
 
 export interface CartItem {

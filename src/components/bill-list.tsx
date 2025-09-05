@@ -27,7 +27,7 @@ export function BillList({ bills, loading, onDownloadPdf }: BillListProps) {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div className="flex-1 min-w-0">
                 <h3 className="font-medium text-gray-900 truncate">
-                  Bill Number : {bill.id}
+                  Bill Number : {bill.billNumber}
                 </h3>
                 <p className="text-sm text-black-600 truncate">
                   Customer Name : {bill.name}
@@ -48,7 +48,7 @@ export function BillList({ bills, loading, onDownloadPdf }: BillListProps) {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={() => onDownloadPdf(bill.id? bill.id : "")}>
+                  <DropdownMenuItem onClick={() => onDownloadPdf(bill.billNumber || "")}>
                     <Download className="mr-2 h-4 w-4" />
                     Download PDF
                   </DropdownMenuItem>

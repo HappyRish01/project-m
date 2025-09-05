@@ -7,4 +7,5 @@ export interface Bill {
   name: string;
   date: string; // ISO date string, e.g., "YYYY-MM-DD"
   createdAt?: string;
+  billNumber?: string;
 }
