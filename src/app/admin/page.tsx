@@ -9,11 +9,11 @@ import { Button } from "@/components/ui/button";
 import { Loader, XCircle } from "lucide-react";
 import { toast } from "sonner";
 
-
 export default function AdminPage() {
   const [bills, setBills] = useState<Bill[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
   useEffect(() => {
@@ -23,28 +23,27 @@ export default function AdminPage() {
     fetchData();
   }, []);
 
-  const buildQuery = (date: Date , query: string = searchQuery) => {
+  const buildQuery = (date: Date, query: string = searchQuery) => {
     const params = new URLSearchParams();
     if (query && query.trim() !== "") {
-    // if (searchQuery) {
-      params.set("search", query); 
+      // if (searchQuery) {
+      params.set("search", query);
       return `/api/bills?${params.toString()}`;
     }
 
     const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    const dateString = `${year}-${month}-${day}`
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const dateString = `${year}-${month}-${day}`;
     params.set("selectedDate", dateString);
     return `/api/bills?${params.toString()}`;
   };
 
-  const fetchBills = async (date:Date , query:string = searchQuery) => {
+  const fetchBills = async (date: Date, query: string = searchQuery) => {
     setLoading(true);
     try {
-      const res = await fetch(buildQuery(date , query))
+      const res = await fetch(buildQuery(date, query));
       const data = await res.json();
-      
 
       if (!res.ok) {
         toast.error(`Error: ${data.message || "Failed to fetch bills"}`);
@@ -61,27 +60,26 @@ export default function AdminPage() {
   const handleClearFilters = () => {
     setSearchQuery(""); //not working
     setSelectedDate(new Date());
-    fetchBills(new Date() , "");
+    fetchBills(new Date(), "");
     // setStartDate(undefined);
     // setEndDate(undefined);
   };
 
-  const handleDownloadPdf = async(billId: string) => {
+  const handleDownloadPdf = async (billId: string) => {
     setLoading(true);
-    try{
-      const res = await fetch("/api/bills/generate",{
+    try {
+      const res = await fetch("/api/bills/generate", {
         method: "POST",
-        headers: {"Content-type": "application/json"},
-        body: JSON.stringify({billId})
+        headers: { "Content-type": "application/json" },
+        body: JSON.stringify({ billId }),
+      });
 
-      })
-
-      if(!res.ok) {
-        throw new Error("Failed to generate bill")
+      if (!res.ok) {
+        throw new Error("Failed to generate bill");
       }
 
       const blob = await res.blob();
-      const url = window.URL.createObjectURL(blob)
+      const url = window.URL.createObjectURL(blob);
 
       const a = document.createElement("a");
       a.href = url;
@@ -89,13 +87,33 @@ export default function AdminPage() {
       document.body.appendChild(a);
       a.click();
       a.remove();
-    }catch(error:any) {
-      console.error(error)
-      alert("Error generating bill pdf")
+    } catch (error: any) {
+      console.error(error);
+      alert("Error generating bill pdf");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
+  };
 
+  const handleDeleteAllbills = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch("/api/bills", {
+        method: "DELETE",
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to delete all bills");
+      }
+
+      toast.success("All bills deleted successfully");
+      setBills([]);
+    } catch (e: any) {
+      toast.error(e);
+    } finally {
+      setLoading(false);
+      setIsDeleteModalOpen(false);
+    }
   };
 
   return (
@@ -107,6 +125,13 @@ export default function AdminPage() {
         <p className="text-gray-600 mt-2">
           View and filter all customer bills.
         </p>
+        <Button
+          variant="destructive"
+          className="mt-4"
+          onClick={() => setIsDeleteModalOpen(true)}
+        >
+          Delete All Bills
+        </Button>
       </div>
 
       <div className="space-y-6">
@@ -119,7 +144,6 @@ export default function AdminPage() {
               placeholder="Search by name, bill #, or amount..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-            
             />
           </div>
 
@@ -154,15 +178,46 @@ export default function AdminPage() {
 
         {/* Bill List */}
         <div className="space-y-4">
-          <h2 className="text-xl font-semibold text-gray-800">Bills will be shown below</h2>
+          <h2 className="text-xl font-semibold text-gray-800">
+            Bills will be shown below
+          </h2>
           <BillList
             bills={bills}
             loading={loading}
             onDownloadPdf={handleDownloadPdf}
           />
-          
         </div>
       </div>
+      {isDeleteModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-accent bg-opacity-100 z-50">
+          <div className="bg-white p-6 rounded-lg shadow-xl w-96">
+            <h2 className="text-lg font-bold text-gray-800">Confirm Delete</h2>
+            <p className="text-gray-600 mt-2">
+              Are you sure you want to{" "}
+              <span className="font-semibold text-red-600">
+                delete all bills
+              </span>
+              ? This action cannot be undone.
+            </p>
+
+            <div className="flex justify-end space-x-3 mt-6">
+              <Button
+                variant="outline"
+                onClick={() => setIsDeleteModalOpen(false)}
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="destructive"
+                onClick={handleDeleteAllbills}
+                disabled={loading}
+              >
+                {loading ? "Deleting..." : "Delete All"}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -119,3 +119,13 @@ export async function POST(req: Request) {
     })
   }
 }
+
+export async function DELETE() {
+  try{ 
+    await prisma.bill.deleteMany();
+    return NextResponse.json({message: "All bills deleted successfully"})
+  }catch(error) {
+    console.log(error)
+    return NextResponse.json({error: "Failed to delete all bills", status: 500})
+  }
+}

@@ -80,6 +80,6 @@ model BillItem {
   gst       Int
    kgpunit    Float?
   unit       Unit?
-  bill    Bill     @relation(fields: [billId], references: [id])
+  bill    Bill     @relation(fields: [billId], references: [id] , onDelete: Cascade)
   product Product? @relation(fields: [productId], references: [id])
 }
