@@ -65,7 +65,7 @@ export default function AdminPage() {
     // setEndDate(undefined);
   };
 
-  const handleDownloadPdf = async (billId: string) => {
+  const handleDownloadPdf = async (billId: string , billNumber: string) => {
     setLoading(true);
     try {
       const res = await fetch("/api/bills/generate", {
@@ -83,7 +83,7 @@ export default function AdminPage() {
 
       const a = document.createElement("a");
       a.href = url;
-      a.download = `bill-${billId}.pdf`;
+      a.download = `bill-${billNumber}.pdf`;
       document.body.appendChild(a);
       a.click();
       a.remove();

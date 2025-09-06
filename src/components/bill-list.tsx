@@ -15,7 +15,7 @@ import { format } from "date-fns"
 interface BillListProps {
   bills: Bill[]
   loading: boolean
-  onDownloadPdf: (billId: string) => void // New prop for PDF download
+  onDownloadPdf: (billId: string , billNumber: string) => void // New prop for PDF download
 }
 
 export function BillList({ bills, loading, onDownloadPdf }: BillListProps) {
@@ -48,7 +48,7 @@ export function BillList({ bills, loading, onDownloadPdf }: BillListProps) {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={() => onDownloadPdf(bill.billNumber || "")}>
+                  <DropdownMenuItem onClick={() => onDownloadPdf(bill.id || "" , bill.billNumber || "")}>
                     <Download className="mr-2 h-4 w-4" />
                     Download PDF
                   </DropdownMenuItem>
