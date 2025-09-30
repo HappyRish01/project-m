@@ -147,7 +147,7 @@ export async function POST(req: Request) {
         doc.moveDown(0.35);
 
         totalQty += item.qty;
-        totalGWeight += item.gWeight;
+        totalGWeight += item.kgpunit * item.quantity;
         totalAmount += item.amount;
       });
 
@@ -223,7 +223,9 @@ export async function POST(req: Request) {
       );
       // Grand Total
       doc.text(
-        `                                                       Grand Total : ${data.totalAmount.toFixed(
+        `                              Total weight : ${totalGWeight} kg    Grand Total : ${data.totalAmount.toFixed(
+      
+
           2
         )}`,
         {
